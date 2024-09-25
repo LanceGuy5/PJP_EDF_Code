@@ -1,50 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Loading...</title>
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #000; /* Set the background color */
-            color: white; /* Set the text color to white */
-            font-family: Arial, sans-serif; /* Optional: Set a font family */
-        }
-        h1 {
-            text-align: center;
-            color: white; /* White title color */
-            margin-bottom: 20px; /* Spacing between title and spinner */
-        }
-        img {
-            width: 300px; /* Adjust the logo size */
-            margin-bottom: 20px; /* Spacing between logo and spinner */
-        }
-        /* Spinner CSS */
-        .spinner {
-            border: 8px solid rgba(255, 255, 255, 0.1); /* Light border */
-            border-left-color: white; /* Color for the left part of the spinner */
-            border-radius: 50%; /* Make it a circle */
-            width: 50px; /* Spinner width */
-            height: 50px; /* Spinner height */
-            animation: spin 1s linear infinite; /* Spin animation */
-        }
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #000; /* Set the background color */
+        color: white; /* Set the text color to white */
+        font-family: Arial, sans-serif; /* Optional: Set a font family */
+      }
+      h1 {
+        text-align: center;
+        color: white; /* White title color */
+        margin-bottom: 20px; /* Spacing between title and spinner */
+      }
+      img {
+        width: 300px; /* Adjust the logo size */
+        margin-bottom: 20px; /* Spacing between logo and spinner */
+      }
+      /* Spinner CSS */
+      .spinner {
+        border: 8px solid rgba(255, 255, 255, 0.1); /* Light border */
+        border-left-color: white; /* Color for the left part of the spinner */
+        border-radius: 50%; /* Make it a circle */
+        width: 50px; /* Spinner width */
+        height: 50px; /* Spinner height */
+        animation: spin 1s linear infinite; /* Spin animation */
+      }
 
-        /* Keyframes for spinning animation */
-        @keyframes spin {
-            to {
-                transform: rotate(360deg); /* Complete a full rotation */
-            }
+      /* Keyframes for spinning animation */
+      @keyframes spin {
+        to {
+          transform: rotate(360deg); /* Complete a full rotation */
         }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>PJPMS Loading...</h1>
     <div class="spinner"></div>
-</body>
+  </body>
 </html>

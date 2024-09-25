@@ -15,7 +15,8 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: 'Penn Jet Propulsion Metrics Suite',
-  description: 'An interactive dashboard that can link with an arduino to measure/display engine metrics.',
+  description:
+    'An interactive dashboard that can link with an arduino to measure/display engine metrics.',
 };
 
 export default function RootLayout({
