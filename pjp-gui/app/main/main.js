@@ -4,14 +4,22 @@ const path = require("path");
 let serve;
 
 const createWindow = async () => {
+  console.log(`[APP]: ${path.join(__dirname, "../icon.png")}`)
   const win = new BrowserWindow({
     // width: 800,
     // height: 600,
+    backgroundColor: "#000000",
     fullscreen: true,
+    icon: path.join(__dirname, "../icon.png"),
     webPreferences: {
-      preload: path.join(__dirname, "preload.ts")
+      preload: path.join(__dirname, "app/preload.ts")
     }
   });
+
+  // set dock image
+  if (process.platform === "darwin") {
+    app.dock.setIcon(path.join(__dirname, "../icon.png"));
+  }
 
   // Load electron-serve dynamically using import()
   if (app.isPackaged) {

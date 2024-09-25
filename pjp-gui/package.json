@@ -1,5 +1,6 @@
 {
   "name": "pjp-gui",
+  "productName": "Penn Jet Propulsion Metrics Suite",
   "version": "0.1.0",
   "private": true,
   "main": "app/main/main.js",
