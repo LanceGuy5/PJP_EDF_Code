@@ -1,22 +1,23 @@
-import { SerialPort } from "serialport";
+import { SerialPort } from 'serialport';
 
 export class PortReader {
-
   private serialPort: SerialPort;
   private params: {
-    baudRate?: number
+    baudRate?: number;
   };
 
-  constructor(serialPort: string, params: {baudRate?: number}) {
+  constructor(serialPort: string, params: { baudRate?: number }) {
     this.serialPort = new SerialPort({
       path: serialPort,
-      baudRate: params.baudRate || 9600
+      baudRate: params.baudRate || 9600,
     });
     this.serialPort.open((err) => {
       if (err) {
         return console.error('Error opening the port:', err.message);
       }
-      console.log(`Serial port opened at ${serialPort} with baud rate ${params.baudRate}`);
+      console.log(
+        `Serial port opened at ${serialPort} with baud rate ${params.baudRate}`
+      );
     });
     this.params = params;
   }
@@ -34,23 +35,23 @@ export class PortReader {
           // data.save();
           console.log(`Saved value: ${value}`);
         } catch (error) {
-          console.error(`Invalid data: ${line}`);
+          console.error(`Invalid data ${line}: ${error}`);
         }
       }
     });
   }
 
-  public closePort(): {'message': 'success' | 'failure'} {
+  public closePort(): { message: 'success' | 'failure' } {
     this.serialPort.close((err) => {
       if (err) {
         console.error('Error closing port:', err);
-        return {'message': 'failure'};
+        return { message: 'failure' };
       } else {
         console.log('Port closed.');
-        return {'message': 'success'};
+        return { message: 'success' };
       }
     });
-    return {'message': 'failure'};
+    return { message: 'failure' };
   }
 
   public getSerialPort(): SerialPort {

@@ -1,10 +1,10 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { contextBridge, ipcRenderer } from 'electron';
 
-contextBridge.exposeInMainWorld("electronAPI", {
-    on: (channel: any, callback: any) => {
-        ipcRenderer.on(channel, callback);
-    },
-    send: (channel: any, args: any) => {
-        ipcRenderer.send(channel, args);
-    }
+contextBridge.exposeInMainWorld('electronAPI', {
+  on: (channel: any, callback: any) => {
+    ipcRenderer.on(channel, callback);
+  },
+  send: (channel: any, args: any) => {
+    ipcRenderer.send(channel, args);
+  },
 });
