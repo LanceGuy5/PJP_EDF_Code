@@ -14,12 +14,14 @@
     "next": "14.2.13",
     "react": "^18",
     "react-dom": "^18",
+    "serialport": "^12.0.0",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/serialport": "^8.0.5",
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
     "postcss": "^8",
