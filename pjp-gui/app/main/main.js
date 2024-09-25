@@ -1,14 +1,15 @@
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 
-let serve;  // Declare this to hold electron-serve
+let serve;
 
 const createWindow = async () => {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    // width: 800,
+    // height: 600,
+    fullscreen: true,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js")
+      preload: path.join(__dirname, "preload.ts")
     }
   });
 
@@ -27,7 +28,7 @@ const createWindow = async () => {
     });
   } else {
     win.loadURL("http://localhost:3000");
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools(); // only use if devtools needs to be open
     win.webContents.on("did-fail-load", (e, code, desc) => {
       win.webContents.reloadIgnoringCache();
     });
