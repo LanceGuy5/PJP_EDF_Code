@@ -8,6 +8,7 @@ const createWindow = async () => {
   const win = new BrowserWindow({
     // width: 800,
     // height: 600,
+    title: 'Penn Jet Propulsion Metrics Suite',
     backgroundColor: '#000000',
     fullscreen: true,
     icon: path.join(__dirname, '../icon.png'),
@@ -20,6 +21,9 @@ const createWindow = async () => {
   if (process.platform === 'darwin') {
     app.dock.setIcon(path.join(__dirname, '../icon.png'));
   }
+
+  // Load the loading screen
+  await win.loadFile(path.join(__dirname, '../html/loading.html'));
 
   // Load electron-serve dynamically using import()
   if (app.isPackaged) {
