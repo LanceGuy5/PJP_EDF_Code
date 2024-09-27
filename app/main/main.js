@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 
 let serve;
@@ -13,7 +13,9 @@ const createWindow = async () => {
     fullscreen: true,
     icon: path.join(__dirname, '../icon.png'),
     webPreferences: {
-      preload: path.join(__dirname, 'app/preload.ts'),
+      nodeIntegration: false, // Ensure nodeIntegration is false for security
+      contextIsolation: true, // Ensure contextIsolation is true for security
+      preload: path.join(__dirname, 'app/preload.js'),
     },
   });
 
@@ -40,7 +42,7 @@ const createWindow = async () => {
     });
   } else {
     win.loadURL('http://localhost:3000');
-    // win.webContents.openDevTools(); // only use if devtools needs to be open
+    win.webContents.openDevTools(); // only use if devtools needs to be open
     win.webContents.on('did-fail-load', (e, code, desc) => {
       win.webContents.reloadIgnoringCache();
     });
@@ -49,6 +51,14 @@ const createWindow = async () => {
 
 app.on('ready', () => {
   createWindow();
+
+  ipcMain.handle('loadDashboard', async () => {
+    const result = await dialog.showOpenDialog({
+      properties: ['openFile'],
+      filters: [{ name: 'JSON', extensions: ['json'] }],
+    });
+    return result; // Return the result back to the renderer
+  });
 });
 
 app.on('window-all-closed', () => {

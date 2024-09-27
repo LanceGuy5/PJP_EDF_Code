@@ -1,4 +1,5 @@
 import { PortReader } from '../classes/PortReader';
+import { ERROR, LOG } from './util';
 
 // SERIAL_PORT = 'COM5'  # Replace with your serial port (e.g., '/dev/ttyACM0' on Linux or 'COM3' on Windows)
 // BAUD_RATE = 9600
@@ -10,7 +11,7 @@ function startReadFromSerial(
   let port;
   try {
     port = new PortReader(serialPort, { baudRate });
-    console.log(`Connected to ${serialPort} at ${baudRate} baud.`);
+    LOG(`Connected to ${serialPort} at ${baudRate} baud.`);
     port.readPort();
     return port;
   } catch (error) {
@@ -19,7 +20,7 @@ function startReadFromSerial(
     if (port) {
       const res = port.closePort();
       if (res.message === 'success') {
-        console.log('Port closed successfully.');
+        LOG('Port closed successfully.');
       } else {
         console.error('Error closing port.');
       }
@@ -30,9 +31,9 @@ function startReadFromSerial(
 function stopReadFromSerial(portReader: PortReader) {
   const res = portReader.closePort();
   if (res.message === 'success') {
-    console.log('Port closed successfully.');
+    LOG('Port closed successfully.');
   } else {
-    console.error('Error closing port.');
+    ERROR('Error closing port.');
   }
 }
 

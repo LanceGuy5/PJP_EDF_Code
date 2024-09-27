@@ -1,4 +1,5 @@
-import { SerialPort } from 'serialport';
+import SerialPort from 'serialport';
+import { LOG } from './util';
 
 /**
  * Function to read info about each port -> print out info
@@ -7,7 +8,7 @@ function listPorts() {
   SerialPort.list()
     .then((ports) => {
       ports.forEach((port) => {
-        console.log(
+        LOG(
           `Port: ${port.path}, PnP ID: ${port.pnpId}, Manufacturer: ${port.manufacturer}`
         );
       });

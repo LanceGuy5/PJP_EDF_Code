@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import ReactSwitch from 'react-switch';
 import * as echarts from 'echarts';
 import { ECharts } from 'echarts';
+import { ERROR, LOG } from '../helpers/util';
 
 export default function LineGraph() {
   const [isEnabled, setEnabled] = useState(true);
@@ -42,7 +43,7 @@ export default function LineGraph() {
     // Clean up the chart when the component unmounts
     return () => {
       if (chartRef.current) {
-        console.log('Destroying chart...');
+        LOG('Destroying chart...');
         chartRef.current.clear();
         chartRef.current.dispose();
       }
@@ -50,12 +51,12 @@ export default function LineGraph() {
   }, []);
 
   const handleTestDataClick = () => {
-    console.log('TEST DATA button clicked!');
+    LOG('TEST DATA button clicked!');
     if (chartRef.current) {
-      console.log('Chart is initialized, calling testDataLive...');
+      LOG('Chart is initialized, calling testDataLive...');
       // do something here idk
     } else {
-      console.error('Chart is not initialized.');
+      ERROR('Chart is not initialized.');
     }
   };
 

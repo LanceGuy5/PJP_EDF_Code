@@ -1,29 +1,25 @@
-import { SerialPort } from 'serialport';
+import SerialPort from 'serialport';
+import { ERROR, LOG } from '../helpers/util';
 
 export class PortReader {
   private serialPort: SerialPort;
-  private params: {
-    baudRate?: number;
-  };
 
   constructor(serialPort: string, params: { baudRate?: number }) {
-    this.serialPort = new SerialPort({
-      path: serialPort,
+    this.serialPort = new SerialPort(serialPort, {
       baudRate: params.baudRate || 9600,
     });
     this.serialPort.open((err) => {
       if (err) {
         return console.error('Error opening the port:', err.message);
       }
-      console.log(
+      LOG(
         `Serial port opened at ${serialPort} with baud rate ${params.baudRate}`
       );
     });
-    this.params = params;
   }
 
   public readPort(): void {
-    this.serialPort.on('data', (data) => {
+    this.serialPort.on('data', (data: { toString: () => string }) => {
       const line = data.toString().trim();
       if (line) {
         try {
@@ -33,9 +29,9 @@ export class PortReader {
           // in this case, however, we might want to save to file AND send to the server for rendering
           // const data = new SensorData({ value });
           // data.save();
-          console.log(`Saved value: ${value}`);
+          LOG(`Saved value: ${value}`);
         } catch (error) {
-          console.error(`Invalid data ${line}: ${error}`);
+          ERROR(`Invalid data ${line}: ${error}`);
         }
       }
     });
@@ -47,7 +43,7 @@ export class PortReader {
         console.error('Error closing port:', err);
         return { message: 'failure' };
       } else {
-        console.log('Port closed.');
+        LOG('Port closed.');
         return { message: 'success' };
       }
     });

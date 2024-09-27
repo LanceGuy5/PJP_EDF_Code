@@ -1,6 +1,7 @@
 import { ECharts } from 'echarts';
 import { DataPoint } from './DataPoint';
 import { Queue } from './datastructures/Queue';
+import { ERROR, LOG } from '../helpers/util';
 
 export class Grapher {
   private ref: React.MutableRefObject<ECharts | null>;
@@ -17,7 +18,7 @@ export class Grapher {
     try {
       this.queue.enqueue(data);
     } catch (e) {
-      console.log(`[ERROR] Data recieve: ${e}`);
+      ERROR(`Data recieve: ${e}`);
       return { status: `failure` };
     }
     return { status: 'success' };
@@ -25,11 +26,11 @@ export class Grapher {
 
   public tick(): { status: 'success' | 'failure' } {
     if (!this.ref.current) {
-      console.log('[ERROR] Chart not mounted');
+      ERROR('Chart not mounted');
       return { status: 'failure' };
     }
     if (this.queue.size() === 0) {
-      console.log('[‼️] No data to display');
+      LOG('[‼️] No data to display');
       return { status: 'success' };
     }
     return { status: 'success' };
