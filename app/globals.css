@@ -9,7 +9,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #575d8a;
     --foreground: #ededed;
   }
 }
@@ -24,4 +24,9 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.graph-element {
+  fill: var(--foreground);
+  /* border-shadow: 0 0 0 1px var(--foreground); */
 }

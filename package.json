@@ -14,9 +14,11 @@
   },
   "dependencies": {
     "@syncfusion/ej2-charts": "^27.1.50",
+    "echarts": "^5.5.1",
     "next": "14.2.13",
     "react": "^18",
     "react-dom": "^18",
+    "react-switch": "^7.0.0",
     "serialport": "^12.0.0",
     "ts-node": "^10.9.2"
   },
