@@ -42,7 +42,7 @@ const createWindow = async () => {
     });
   } else {
     win.loadURL('http://localhost:3000');
-    win.webContents.openDevTools(); // only use if devtools needs to be open
+    // win.webContents.openDevTools(); // only use if devtools needs to be open
     win.webContents.on('did-fail-load', (e, code, desc) => {
       win.webContents.reloadIgnoringCache();
     });
