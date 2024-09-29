@@ -20,17 +20,17 @@ export class PortReader extends EventEmitter {
     });
   }
 
-  public readPort(): void {
-    this.serialPort.on('data', (data: { toString: () => string }) => {
-      const sensorData = data.toString();
-      const parsedData = sensorData.split('#');
-      parsedData.forEach((sensor) => {
-        if (sensor.trim() !== '') {
-          LOG(`Sensor data: ${sensor}`);
-        }
-      });
-    });
-  }
+  public readPort = async () => {
+    if (typeof window !== 'undefined' && (window as any).electronAPI) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = await (window as any).electronAPI.readPort(
+        this.serialPort
+      );
+      LOG(result); // handle result here
+    } else {
+      LOG('Electron API not available in this environment');
+    }
+  };
 
   public closePort(): { message: 'success' | 'failure' } {
     this.serialPort.close((err) => {
