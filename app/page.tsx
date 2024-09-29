@@ -4,11 +4,12 @@ import { useState } from 'react';
 import { ERROR, LOG } from './helpers/util';
 import Image from 'next/image';
 import Dashboard from './classes/Dashboard';
-import DashboardRenderer from './components/Dashboard';
+// import DashboardRenderer from './components/Dashboard';
 import InfoPopup from './components/ui/InfoPopup';
+import LineGraph from './components/LineGraph';
 
 export default function Home() {
-  const dashboard: Dashboard | null = null;
+  const dashboard: Dashboard | null = new Dashboard('hello world'); // null
   const [dashboardLoading, setDashboardLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const handleShowPopup = () => setShowPopup(true);
@@ -23,6 +24,21 @@ export default function Home() {
         const result = await (window as any).electronAPI.loadDashboard();
         LOG(result); // handle result here
         setDashboardLoading(false);
+      } else {
+        LOG('Electron API not available in this environment');
+      }
+    } catch (error) {
+      ERROR(`Error loading dashboard: ${error}`);
+    }
+  };
+  const listPorts = async () => {
+    try {
+      LOG('Listing ports...');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (typeof window !== 'undefined' && (window as any).electronAPI) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const result = await (window as any).electronAPI.listPorts();
+        LOG(result);
       } else {
         LOG('Electron API not available in this environment');
       }
@@ -69,8 +85,17 @@ export default function Home() {
       </footer>
     </>
   ) : (
+    // <>
+    //   <DashboardRenderer dashboard={dashboard} />
+    // </>
     <>
-      <DashboardRenderer dashboard={dashboard} />
+      <LineGraph />
+      <button
+        className='transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
+        onClick={() => listPorts()}
+      >
+        Get Ports
+      </button>
     </>
   );
 }

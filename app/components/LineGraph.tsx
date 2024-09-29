@@ -6,12 +6,14 @@ import ReactSwitch from 'react-switch';
 import * as echarts from 'echarts';
 import { ECharts } from 'echarts';
 import { ERROR, LOG } from '../helpers/util';
+import { Grapher } from '../classes/Grapher';
+import { DataPoint } from '../classes/DataPoint';
 
 export default function LineGraph() {
-  const [isEnabled, setEnabled] = useState(true);
+  const [isEnabled, setEnabled] = useState(false);
   const chartRef = useRef<ECharts | null>(null); // Create a ref to hold the chart instance
-  // const series1Ref = useRef<{ x: number; y: number }[]>([]); // Ref for persistent series data
-  // const grapher = new Grapher(chartRef); // Grapher that can map to a serial port
+  const seriesRef = useRef<{ x: number; y: number }[]>([]); // Ref for persistent series data
+  const grapher = new Grapher(chartRef); // Grapher that can map to a serial port
 
   useEffect(() => {
     // Create and mount the chart when the component mounts
@@ -22,15 +24,14 @@ export default function LineGraph() {
     // Specify the configuration items and data for the chart
     const option = {
       xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        type: 'value',
       },
       yAxis: {
         type: 'value',
       },
       series: [
         {
-          data: [820, 932, 901, 934, 1290, 1330, 1320],
+          data: seriesRef.current,
           type: 'line',
           smooth: true,
         },
@@ -50,11 +51,22 @@ export default function LineGraph() {
     };
   }, []);
 
-  const handleTestDataClick = () => {
+  setInterval(() => {
+    if (isEnabled) {
+      grapher.tick();
+    }
+  }, 20);
+
+  const handleTestDataClick = (grapher: Grapher) => {
     LOG('TEST DATA button clicked!');
     if (chartRef.current) {
       LOG('Chart is initialized, calling testDataLive...');
-      // do something here idk
+      let i = 0;
+      while (i < 1000) {
+        console.log('recieveData');
+        grapher.recieveData(new DataPoint<number>(i, Date.now()));
+        i++;
+      }
     } else {
       ERROR('Chart is not initialized.');
     }
@@ -78,7 +90,7 @@ export default function LineGraph() {
           <div className='absolute right-2 top-2'>
             <button
               className='text-xl font-bold text-red-600'
-              onClick={handleTestDataClick} // Call the wrapper function
+              onClick={() => handleTestDataClick(grapher)} // Call the wrapper function
             >
               TEST DATA
             </button>

@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
+const { listPorts } = require('../helpers/ports.js');
 
 let serve;
 
@@ -42,7 +43,7 @@ const createWindow = async () => {
     });
   } else {
     win.loadURL('http://localhost:3000');
-    // win.webContents.openDevTools(); // only use if devtools needs to be open
+    win.webContents.openDevTools(); // only use if devtools needs to be open
     win.webContents.on('did-fail-load', (e, code, desc) => {
       win.webContents.reloadIgnoringCache();
     });
@@ -58,6 +59,10 @@ app.on('ready', () => {
       filters: [{ name: 'JSON', extensions: ['json'] }],
     });
     return result; // Return the result back to the renderer
+  });
+  ipcMain.handle('listPorts', async () => {
+    const result = await listPorts();
+    return result;
   });
 });
 

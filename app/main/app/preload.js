@@ -12,4 +12,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     const result = await ipcRenderer.invoke('loadDashboard');
     return result;
   },
+  listPorts: async () => {
+    console.log('[PRELOAD]: listPorts called');
+    const result = await ipcRenderer.invoke('listPorts');
+    return result;
+  },
 });

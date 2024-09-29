@@ -33,6 +33,17 @@ export class Grapher {
       LOG('[‼️] No data to display');
       return { status: 'success' };
     }
+    const data = this.queue.dequeue();
+    LOG(`[📈] Displaying data: ${data}`);
+    this.ref.current.setOption({
+      series: [
+        {
+          data: data,
+          type: 'line',
+          smooth: true,
+        },
+      ],
+    });
     return { status: 'success' };
   }
 }

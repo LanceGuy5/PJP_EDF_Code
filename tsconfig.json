@@ -28,7 +28,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/main/main.js",
-    "app/main/app/preload.js"
+    "app/main/app/preload.js",
+    "app/helpers/ports.js"
   ],
   "exclude": ["node_modules"]
 }

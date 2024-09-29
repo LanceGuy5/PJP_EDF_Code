@@ -1,10 +1,12 @@
+import { EventEmitter } from 'events';
 import SerialPort from 'serialport';
-import { ERROR, LOG } from '../helpers/util';
+import { LOG } from '../helpers/util';
 
-export class PortReader {
+export class PortReader extends EventEmitter {
   private serialPort: SerialPort;
 
   constructor(serialPort: string, params: { baudRate?: number }) {
+    super();
     this.serialPort = new SerialPort(serialPort, {
       baudRate: params.baudRate || 9600,
     });
@@ -20,20 +22,13 @@ export class PortReader {
 
   public readPort(): void {
     this.serialPort.on('data', (data: { toString: () => string }) => {
-      const line = data.toString().trim();
-      if (line) {
-        try {
-          const value = parseFloat(line);
-          // TODO here we want to do something with save data
-          // the "SensorData" job was to store a timestamp and a sensor value
-          // in this case, however, we might want to save to file AND send to the server for rendering
-          // const data = new SensorData({ value });
-          // data.save();
-          LOG(`Saved value: ${value}`);
-        } catch (error) {
-          ERROR(`Invalid data ${line}: ${error}`);
+      const sensorData = data.toString();
+      const parsedData = sensorData.split('#');
+      parsedData.forEach((sensor) => {
+        if (sensor.trim() !== '') {
+          LOG(`Sensor data: ${sensor}`);
         }
-      }
+      });
     });
   }
 
