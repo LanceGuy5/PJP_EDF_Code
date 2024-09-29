@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
-const { listPorts } = require('../helpers/ports.js');
+const { listPorts, readFromPort } = require('../helpers/ports.js');
 
 let serve;
 
@@ -64,16 +64,8 @@ app.on('ready', () => {
     const result = await listPorts();
     return result;
   });
-  ipcMain.handle('readPort', async (serialPort) => {
-    this.serialPort.on('data', (data) => {
-      const sensorData = data.toString();
-      const parsedData = sensorData.split('#');
-      parsedData.forEach((sensor) => {
-        if (sensor.trim() !== '') {
-          LOG(`Sensor data: ${sensor}`);
-        }
-      });
-    });
+  ipcMain.handle('readFromPort', async (serialPort, params) => {
+    readFromPort(serialPort, params);
   });
 });
 

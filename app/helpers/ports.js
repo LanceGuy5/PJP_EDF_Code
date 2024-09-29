@@ -18,16 +18,19 @@ function listPorts() {
     });
 }
 
-function readFromPort() {
+function readFromPort(serialPort, params) {
   serialPort = new SerialPort(serialPort, {
     baudRate: params.baudRate || 9600,
   });
-  if (typeof window !== 'undefined' && window.electronAPI) {
-    const result = await(window.electronAPI).readPort(serialPort);
-    LOG(result);
-  } else {
-    LOG('Electron API not available in this environment');
-  }
+  serialPort.on('data', (data) => {
+    const sensorData = data.toString();
+    const parsedData = sensorData.split('#');
+    parsedData.forEach((sensor) => {
+      if (sensor.trim() !== '') {
+        LOG(`Sensor data: ${sensor}`);
+      }
+    });
+  });
 }
 
-module.exports = { listPorts };
+module.exports = { listPorts, readFromPort };

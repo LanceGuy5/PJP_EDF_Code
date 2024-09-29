@@ -46,8 +46,22 @@ export default function Home() {
       ERROR(`Error loading dashboard: ${error}`);
     }
   };
-  function readFromPort(): void {
-    throw new Error('Function not implemented.');
+  async function readFromPort(): Promise<void> {
+    try {
+      LOG('Listing ports...');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (typeof window !== 'undefined' && (window as any).electronAPI) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const result = await (window as any).electronAPI.readFromPort('COM6', {
+          baudRate: 9600,
+        });
+        LOG(result);
+      } else {
+        LOG('Electron API not available in this environment');
+      }
+    } catch (error) {
+      ERROR(`bro: ${error}`);
+    }
   }
 
   return !dashboard ? (
