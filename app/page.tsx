@@ -46,6 +46,10 @@ export default function Home() {
       ERROR(`Error loading dashboard: ${error}`);
     }
   };
+  function readFromPort(): void {
+    throw new Error('Function not implemented.');
+  }
+
   return !dashboard ? (
     <>
       <div className='grid min-h-screen items-center justify-items-center gap-16 p-8 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20'>
@@ -95,6 +99,12 @@ export default function Home() {
         onClick={() => listPorts()}
       >
         Get Ports
+      </button>
+      <button
+        className='transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
+        onClick={() => readFromPort()}
+      >
+        READ FROM PORT
       </button>
     </>
   );

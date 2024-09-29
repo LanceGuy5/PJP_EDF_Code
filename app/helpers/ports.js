@@ -18,4 +18,16 @@ function listPorts() {
     });
 }
 
+function readFromPort() {
+  serialPort = new SerialPort(serialPort, {
+    baudRate: params.baudRate || 9600,
+  });
+  if (typeof window !== 'undefined' && window.electronAPI) {
+    const result = await(window.electronAPI).readPort(serialPort);
+    LOG(result);
+  } else {
+    LOG('Electron API not available in this environment');
+  }
+}
+
 module.exports = { listPorts };

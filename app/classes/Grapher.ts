@@ -2,14 +2,17 @@ import { ECharts } from 'echarts';
 import { DataPoint } from './DataPoint';
 import { Queue } from './datastructures/Queue';
 import { ERROR, LOG } from '../helpers/util';
+// import { PortReader } from './PortReader';
 
 export class Grapher {
   private ref: React.MutableRefObject<ECharts | null>;
   private queue: Queue<DataPoint<number>>;
+  // private port: PortReader;
 
   constructor(ref: React.MutableRefObject<ECharts | null>) {
     this.ref = ref;
     this.queue = new Queue<DataPoint<number>>();
+    // this.port = new PortReader('COM6', {baudRate: 9600});
   }
 
   public recieveData(data: DataPoint<number>): {
