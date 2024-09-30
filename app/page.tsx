@@ -9,7 +9,7 @@ import InfoPopup from './components/ui/InfoPopup';
 // import LineGraph from './components/LineGraph';
 
 export default function Home() {
-  const dashboard: Dashboard | null = new Dashboard('hello world'); // null
+  const [dashboard, setDashboard] = useState<Dashboard | null>(null);
   const [dashboardLoading, setDashboardLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const handleShowPopup = () => setShowPopup(true);
@@ -98,7 +98,9 @@ export default function Home() {
               </button>
             )}
           </div>
-          {showPopup && <InfoPopup onClose={handleClosePopup} />}
+          {showPopup && (
+            <InfoPopup onClose={handleClosePopup} setDashboard={setDashboard} />
+          )}
         </main>
       </div>
       <footer className='absolute bottom-0 w-full p-4 text-center font-[family-name:var(--font-geist-sans)] text-gray-300'>

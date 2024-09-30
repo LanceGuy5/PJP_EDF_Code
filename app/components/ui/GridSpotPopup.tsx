@@ -1,44 +1,21 @@
-import Dashboard from '@/app/classes/Dashboard';
-import React, { useState } from 'react';
+import GridSpotContent from '@/app/classes/GridSpotContent';
+import React from 'react';
 
-// TODO figure out a way to make this better
-const rows = 6; // Number of rows
-const cols = 11; // Number of columns
+function addContent(content: GridSpotContent | null) {
+  console.log(`Adding content now: ${content}`);
+}
 
 interface InfoPopupProps {
   onClose: () => void;
-  setDashboard: (d: Dashboard | null) => void;
+  content: GridSpotContent | null;
 }
 
-const createDashboard = (
-  setDashboard: (d: Dashboard | null) => void,
-  name: string,
-  onClose: () => void
-) => {
-  setDashboard(
-    new Dashboard(
-      name,
-      Array(rows)
-        .fill(null)
-        .map(() => Array(cols).fill(null))
-    )
-  );
-  onClose();
-};
-
-const InfoPopup: React.FC<InfoPopupProps> = ({ onClose, setDashboard }) => {
-  const [name, setName] = useState('');
-
-  // Function to handle changes in the input
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value); // Update the state with the input value
-  };
-
+const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, content }) => {
   return (
     <div style={styles.overlay}>
       <div style={styles.popup} className='flex flex-col text-black'>
         <div className='flex justify-between'>
-          <h1 className='text-2xl font-bold'>New Dashboard</h1>
+          <h1 className='text-2xl font-bold'>Add Content</h1>
           <button
             onClick={onClose}
             className='-mt-1 flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold transition-all duration-200 hover:bg-gray-200 hover:shadow-lg'
@@ -46,22 +23,15 @@ const InfoPopup: React.FC<InfoPopupProps> = ({ onClose, setDashboard }) => {
             ✖
           </button>
         </div>
-        <div className='flex flex-row'>
-          <p className='mt-1.5 text-xl'>Name</p>
-          <input
-            className='ml-5 rounded border border-gray-300 p-2'
-            name='myInput'
-            placeholder='Fun Name :)'
-            value={name} // Bind the input to the state
-            onChange={handleInputChange} // Handle input changes
-          />
-        </div>
+        <p className='mt-1.5 text-xl'>DEVELOP THIS SCREEN HAHAHA</p>
         <div className='flex justify-end'>
           <button
-            onClick={() => createDashboard(setDashboard, name, onClose)}
+            onClick={() => {
+              addContent(content);
+            }}
             className='mt-5 rounded-full px-4 py-2 text-xl font-bold transition-all duration-200 hover:bg-blue-200 hover:shadow-lg'
           >
-            Create
+            Add
           </button>
         </div>
       </div>
@@ -110,4 +80,4 @@ const styles = {
   },
 };
 
-export default InfoPopup;
+export default GridSpotPopup;

@@ -1,12 +1,16 @@
+import GridSpotContent from './GridSpotContent';
+
 /**
  * This will be the actual data structure of the dashboard that does the hard work.
  * It will be responsible for managing the data and the graphs.
  */
 export default class Dashboard {
   private name: string;
+  private content: GridSpotContent[][];
 
-  constructor(name: string) {
+  constructor(name: string, content: GridSpotContent[][]) {
     this.name = name;
+    this.content = content;
   }
 
   /**
@@ -26,5 +30,5 @@ export default class Dashboard {
 export function importDashboard(filePath: string): Dashboard {
   // TODO INCORPORATE FILE READING
   console.log(filePath);
-  return new Dashboard('hello world');
+  return new Dashboard('hello world', []);
 }
