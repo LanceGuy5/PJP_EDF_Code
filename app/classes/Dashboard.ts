@@ -17,6 +17,10 @@ export default class Dashboard {
   public getName(): string {
     return this.name;
   }
+
+  public setName(name: string): void {
+    this.name = name;
+  }
 }
 
 export function importDashboard(filePath: string): Dashboard {
