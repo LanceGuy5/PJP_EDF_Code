@@ -11,6 +11,7 @@ const config: Config = {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
+        backgroundHover: '#515682',
       },
     },
     fontFamily: {
