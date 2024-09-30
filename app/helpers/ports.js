@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 const { SerialPort } = require('serialport');
 
 /**
@@ -18,19 +19,26 @@ function listPorts() {
     });
 }
 
-function readFromPort(serialPort, params) {
-  serialPort = new SerialPort(serialPort, {
-    baudRate: params.baudRate || 9600,
-  });
-  serialPort.on('data', (data) => {
-    const sensorData = data.toString();
-    const parsedData = sensorData.split('#');
-    parsedData.forEach((sensor) => {
-      if (sensor.trim() !== '') {
-        LOG(`Sensor data: ${sensor}`);
-      }
+function readFromPort(path, options) {
+  try {
+    const serial = new SerialPort({ path, ...options });
+    serial.on('data', (data) => {
+      const sensorData = data.toString();
+      const parsedData = sensorData.split('#');
+      parsedData.forEach((sensor) => {
+        if (sensor.trim() !== '') {
+          console.log(`Sensor data: ${sensor}`);
+        }
+      });
     });
-  });
+    serial.on('error', (err) => {
+      console.error('Error on serial port:', err);
+    });
+    return serial; // Return the serial port object
+  } catch (error) {
+    console.error('Error initializing SerialPort:', error);
+    throw error; // Re-throw the error to handle it at a higher level if needed
+  }
 }
 
 module.exports = { listPorts, readFromPort };

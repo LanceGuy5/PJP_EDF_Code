@@ -3,6 +3,7 @@ const path = require('path');
 const { listPorts, readFromPort } = require('../helpers/ports.js');
 
 let serve;
+const serialPorts = [];
 
 const createWindow = async () => {
   console.log(`[APP]: ${path.join(__dirname, '../icon.png')}`);
@@ -64,8 +65,10 @@ app.on('ready', () => {
     const result = await listPorts();
     return result;
   });
-  ipcMain.handle('readFromPort', async (serialPort, params) => {
-    readFromPort(serialPort, params);
+  ipcMain.handle('readFromPort', async (event, path, options) => {
+    const serialPort = readFromPort(path, options);
+    // TODO assign each one to a different id
+    serialPorts.push(serialPort);
   });
 });
 

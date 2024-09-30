@@ -21,6 +21,7 @@ export class PortReader extends EventEmitter {
   }
 
   public readPort = async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (typeof window !== 'undefined' && (window as any).electronAPI) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await (window as any).electronAPI.readPort(

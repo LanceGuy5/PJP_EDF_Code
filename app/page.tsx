@@ -52,8 +52,11 @@ export default function Home() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (typeof window !== 'undefined' && (window as any).electronAPI) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const result = await (window as any).electronAPI.readFromPort('COM6', {
-          baudRate: 9600,
+        const result = await (window as any).electronAPI.readFromPort({
+          path: '/dev/tty.Bluetooth-Incoming-Port',
+          options: {
+            baudRate: 9600,
+          },
         });
         LOG(result);
       } else {

@@ -17,9 +17,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
     const result = await ipcRenderer.invoke('listPorts');
     return result;
   },
-  readFromPort: async (port, params) => {
-    console.log(`[PRELOAD]: readPort called with port ${port}`);
-    const result = await ipcRenderer.invoke('readFromPort', port, params);
-    return result;
+  readFromPort: async (params) => {
+    console.log(
+      `[PRELOAD]: readPort called with port ${params.path} and params ${JSON.stringify(params.options)}`
+    );
+    const serialPort = await ipcRenderer.invoke(
+      'readFromPort',
+      params.path,
+      params.options
+    );
+    return serialPort;
   },
 });
