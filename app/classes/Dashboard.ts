@@ -6,7 +6,7 @@ import GridSpotContent from './GridSpotContent';
  */
 export default class Dashboard {
   private name: string;
-  private content: GridSpotContent[][];
+  private content: (GridSpotContent | null)[][];
 
   constructor(name: string, content: GridSpotContent[][]) {
     this.name = name;
@@ -24,6 +24,34 @@ export default class Dashboard {
 
   public setName(name: string): void {
     this.name = name;
+  }
+
+  public setContent(content: GridSpotContent, i: number, j: number): boolean {
+    try {
+      this.content[i][j] = content;
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }
+
+  public getContent(i: number, j: number): GridSpotContent | null {
+    return this.content[i][j];
+  }
+
+  public getContents(): (GridSpotContent | null)[][] {
+    return this.content;
+  }
+
+  public removeContent(i: number, j: number): boolean {
+    try {
+      this.content[i][j] = null;
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
   }
 }
 

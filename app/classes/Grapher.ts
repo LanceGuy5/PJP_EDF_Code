@@ -7,11 +7,13 @@ import { ERROR, LOG } from '../helpers/util';
 export class Grapher {
   private ref: React.MutableRefObject<ECharts | null>;
   private queue: Queue<DataPoint<number>>;
+  private isRunning: boolean;
   // private port: PortReader;
 
   constructor(ref: React.MutableRefObject<ECharts | null>) {
     this.ref = ref;
     this.queue = new Queue<DataPoint<number>>();
+    this.isRunning = false;
     // this.port = new PortReader('COM6', {baudRate: 9600});
   }
 
@@ -27,7 +29,18 @@ export class Grapher {
     return { status: 'success' };
   }
 
+  public start() {
+    this.isRunning = true;
+  }
+
+  public stop() {
+    this.isRunning = false;
+  }
+
   public tick(): { status: 'success' | 'failure' } {
+    if (!this.isRunning) {
+      return { status: 'success' };
+    }
     if (!this.ref.current) {
       ERROR('Chart not mounted');
       return { status: 'failure' };

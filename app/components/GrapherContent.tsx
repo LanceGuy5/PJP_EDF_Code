@@ -9,7 +9,7 @@ import { ERROR, LOG } from '../helpers/util';
 import { Grapher } from '../classes/Grapher';
 import { DataPoint } from '../classes/DataPoint';
 
-export default function LineGraph() {
+export default function GrapherContent() {
   const [isEnabled, setEnabled] = useState(false);
   const chartRef = useRef<ECharts | null>(null); // Create a ref to hold the chart instance
   const seriesRef = useRef<{ x: number; y: number }[]>([]); // Ref for persistent series data
