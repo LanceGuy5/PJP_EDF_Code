@@ -175,7 +175,7 @@ export default function DashboardRenderer({
         {grid.map((row, i) => (
           <div key={i} className='grid-row'>
             {row.map((cell, j) => (
-              <GridSpot key={`${i}-${j}`} content={cell} editMode={editState} />
+              <GridSpot key={`${i}-${j}`} editMode={editState} />
             ))}
           </div>
         ))}

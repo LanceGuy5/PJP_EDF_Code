@@ -3,15 +3,18 @@ import { useState } from 'react';
 import GridSpotPopup from './GridSpotPopup';
 
 interface GridSpotProps {
-  content: GridSpotContent | null; // Content for each grid spot
   editMode: boolean; // Whether the dashboard is in edit mode
 }
 
-// TODO make so that if content is on screen in edit mode, can be drag and dropped
-export default function GridSpot({ content, editMode }: GridSpotProps) {
+export default function GridSpot({ editMode }: GridSpotProps) {
   const [showPopup, setShowPopup] = useState(false);
+  const [content, setContent] = useState<GridSpotContent | null>(null);
   const handleShowPopup = () => setShowPopup(true);
   const handleClosePopup = () => setShowPopup(false);
+  const addContent = (content: GridSpotContent | null) => {
+    handleClosePopup();
+    setContent(content);
+  };
   return (
     <>
       <div
@@ -33,7 +36,7 @@ export default function GridSpot({ content, editMode }: GridSpotProps) {
         ) : null}
       </div>
       {showPopup && (
-        <GridSpotPopup onClose={handleClosePopup} content={content} />
+        <GridSpotPopup onClose={handleClosePopup} onConfirm={addContent} />
       )}
     </>
   );

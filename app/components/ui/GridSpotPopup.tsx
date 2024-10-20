@@ -1,16 +1,12 @@
 import GridSpotContent from '@/app/classes/GridSpotContent';
 import React from 'react';
 
-function addContent(content: GridSpotContent | null) {
-  console.log(`Adding content now: ${content}`);
-}
-
 interface InfoPopupProps {
   onClose: () => void;
-  content: GridSpotContent | null;
+  onConfirm: (content: GridSpotContent | null) => void;
 }
 
-const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, content }) => {
+const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
   return (
     <div style={styles.overlay}>
       <div style={styles.popup} className='flex flex-col text-black'>
@@ -27,7 +23,7 @@ const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, content }) => {
         <div className='flex justify-end'>
           <button
             onClick={() => {
-              addContent(content);
+              onConfirm(new GridSpotContent('hello'));
             }}
             className='mt-5 rounded-full px-4 py-2 text-xl font-bold transition-all duration-200 hover:bg-blue-200 hover:shadow-lg'
           >
