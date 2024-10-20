@@ -3,18 +3,19 @@ import { useState } from 'react';
 import GridSpotPopup from './GridSpotPopup';
 
 interface GridSpotProps {
-  editMode: boolean; // Whether the dashboard is in edit mode
+  editMode: boolean;
+  content: GridSpotContent; // Whether the dashboard is in edit mode
 }
 
-export default function GridSpot({ editMode }: GridSpotProps) {
+export default function GridSpot({ editMode, content }: GridSpotProps) {
   const [showPopup, setShowPopup] = useState(false);
-  const [content, setContent] = useState<GridSpotContent | null>(null);
+  const [size, setSize] = useState<number>(50);
   const handleShowPopup = () => setShowPopup(true);
   const handleClosePopup = () => setShowPopup(false);
-  const addContent = (content: GridSpotContent | null) => {
-    handleClosePopup();
-    setContent(content);
-  };
+
+  function changeDim(newSize: number) {
+    setSize(newSize);
+  }
   return (
     <>
       <div
@@ -35,9 +36,9 @@ export default function GridSpot({ editMode }: GridSpotProps) {
           </button>
         ) : null}
       </div>
-      {showPopup && (
-        <GridSpotPopup onClose={handleClosePopup} onConfirm={addContent} />
-      )}
+      {/* {showPopup && (
+        <GridSpotPopup onClose={handleClosePopup} onConfirm={() => return null} />
+      )} */}
     </>
   );
 }

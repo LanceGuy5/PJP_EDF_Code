@@ -6,14 +6,6 @@ import Dashboard from '../classes/Dashboard';
 import GridSpotContent from '../classes/GridSpotContent';
 import GridSpot from './ui/GridSpot';
 
-// TODO figure out a way to make this better
-const rows = 6; // Number of rows
-const cols = 11; // Number of columns
-
-const grid: GridSpotContent[][] = Array(rows)
-  .fill(null)
-  .map(() => Array(cols).fill(null));
-
 function saveDashboard() {
   // TODO functionality to save dashboard
 }
@@ -41,12 +33,19 @@ interface DashboardRendererProps {
 export default function DashboardRenderer({
   dashboard,
 }: DashboardRendererProps) {
+  const [numBoxes, setNumBoxes] = useState<number>(0);
+  const [grids, setGrids] = useState<GridSpotContent[]>([]);
   const [running, setRunning] = useState(false); // this runs ALL GRID SPOTS
   const [editState, setEditState] = useState(false); // this is for editing the dashboard
 
   // editing dashboard name
   const [isEditing, setIsEditing] = useState(false);
   const [dashboardName, setDashboardName] = useState(dashboard.getName());
+
+  function addGrid() {
+    setGrids((currData) => [...currData, new GridSpotContent('hello world')]);
+    setNumBoxes((currVal) => (currVal += 1));
+  }
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === '') setDashboardName(dashboard.getName()); // Reset the name if it's empty
@@ -133,6 +132,7 @@ export default function DashboardRenderer({
           </div>
         </div>
         <div className='flex flex-row gap-4'>
+          <button onClick={() => addGrid()}>Add Button</button>
           <button
             onClick={() => {
               setRunning(!running);
@@ -171,15 +171,10 @@ export default function DashboardRenderer({
           </button>
         </div>
       </header>
-      <div className='grid-container'>
-        {grid.map((row, i) => (
-          <div key={i} className='grid-row'>
-            {row.map((cell, j) => (
-              <GridSpot key={`${i}-${j}`} editMode={editState} />
-            ))}
-          </div>
-        ))}
-      </div>
+
+      {grids.map((x: GridSpotContent, index) => (
+        <GridSpot content={x} editMode={editState} />
+      ))}
     </div>
   );
 }
