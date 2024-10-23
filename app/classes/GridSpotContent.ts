@@ -1,15 +1,14 @@
-import { ECharts } from 'echarts';
-import { Options } from 'electron';
+import { ECBasicOption } from 'echarts/types/dist/shared';
 
 export default class GridSpotContent {
-  private content: Options;
+  private content: ECBasicOption;
   private x: number;
   private y: number;
   private width: number;
   private height: number;
 
   constructor(
-    content: Options,
+    content: ECBasicOption,
     x: number,
     y: number,
     width: number,
@@ -22,7 +21,7 @@ export default class GridSpotContent {
     this.height = height;
   }
 
-  getContent(): Options {
+  getContent(): ECBasicOption {
     return this.content;
   }
 
@@ -42,7 +41,7 @@ export default class GridSpotContent {
     return this.height;
   }
 
-  setContent(content: Options): void {
+  setContent(content: ECBasicOption): void {
     this.content = content;
   }
 

@@ -1,9 +1,9 @@
-import { Options } from '@/app/classes/Options';
+import { ECBasicOption } from 'echarts/types/dist/shared';
 import React from 'react';
 
 interface InfoPopupProps {
   onClose: () => void;
-  onConfirm: (content: Options) => void;
+  onConfirm: (content: ECBasicOption) => void;
 }
 
 const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {

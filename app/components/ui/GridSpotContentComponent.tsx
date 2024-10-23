@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import { ECharts } from 'echarts';
 import * as echarts from 'echarts';
 import { LOG } from '@/app/helpers/util';
-import { Options } from '@/app/classes/Options';
+import { ECBasicOption } from 'echarts/types/dist/shared';
 
 interface GridSpotContentProps {
-  options: Options;
+  options: ECBasicOption;
   name: string;
   editMode: boolean;
   x: number;

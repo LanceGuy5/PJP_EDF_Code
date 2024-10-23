@@ -7,7 +7,7 @@ import GridSpotContent from '../classes/GridSpotContent';
 import GridSpot from './ui/GridSpot';
 import GridSpotPopup from './ui/GridSpotPopup';
 import { ECharts } from 'echarts';
-import { Options } from '../classes/Options';
+import { ECBasicOption } from 'echarts/types/dist/shared';
 
 function saveDashboard() {
   // TODO functionality to save dashboard
@@ -46,7 +46,7 @@ export default function DashboardRenderer({
   const [isEditing, setIsEditing] = useState(false);
   const [dashboardName, setDashboardName] = useState(dashboard.getName());
 
-  function addGrid(chartType: Options) {
+  function addGrid(chartType: ECBasicOption) {
     setGrids((currData) => [
       ...currData,
       new GridSpotContent(
@@ -164,7 +164,7 @@ export default function DashboardRenderer({
           {adding && (
             <GridSpotPopup
               onClose={() => setAdding(false)}
-              onConfirm={(content: Options) => {
+              onConfirm={(content: ECBasicOption) => {
                 addGrid(content); // this is what selection ends up going to
                 setAdding(false);
               }}
