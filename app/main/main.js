@@ -72,6 +72,10 @@ app.on('ready', () => {
   });
 });
 
+app.on('before-quit', () => {
+  // TODO Make sure all code is cleaned up
+});
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();

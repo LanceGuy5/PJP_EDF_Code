@@ -1,44 +1,54 @@
 import GridSpotContent from '@/app/classes/GridSpotContent';
+import GridSpotContentComponent from './GridSpotContentComponent';
 import { useState } from 'react';
-import GridSpotPopup from './GridSpotPopup';
 
 interface GridSpotProps {
-  editMode: boolean;
-  content: GridSpotContent; // Whether the dashboard is in edit mode
+  content: GridSpotContent;
+  editMode: boolean; // Whether the dashboard is in edit mode
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
-export default function GridSpot({ editMode, content }: GridSpotProps) {
-  const [showPopup, setShowPopup] = useState(false);
-  const [size, setSize] = useState<number>(50);
-  const handleShowPopup = () => setShowPopup(true);
-  const handleClosePopup = () => setShowPopup(false);
-
-  function changeDim(newSize: number) {
-    setSize(newSize);
-  }
+export default function GridSpot({
+  content,
+  editMode,
+  x,
+  y,
+  width,
+  height,
+}: GridSpotProps) {
+  // TODO setXXX functions are for moving/resizing
+  const [trueWidth, setTrueWidth] = useState(width);
+  const [trueHeight, setTrueHeight] = useState(height);
+  const [trueX, setTrueX] = useState(x);
+  const [trueY, setTrueY] = useState(y);
   return (
     <>
       <div
-        className={`${content ? 'grid-spot' : 'grid-spot-nonadj'} transition-all duration-200`}
+        style={{
+          position: 'relative',
+          left: `${trueX}px`,
+          top: `${trueY}px`,
+          width: `${trueWidth}px`,
+          height: `${trueHeight}px`,
+          zIndex: 1, // Ensure it's on top, you can adjust the value as needed
+          transform: `translate(-50%, -50%)`, // Center the component around the (x, y) point
+        }}
       >
-        {content ? (
-          editMode ? (
-            <p>EDIT MODE</p>
-          ) : (
-            <p>{content.render()}</p>
-          )
-        ) : editMode ? (
-          <button
-            onClick={() => handleShowPopup()}
-            className='grid-spot-text flex h-12 w-12 items-center justify-center rounded-full opacity-0 transition-all duration-200 hover:bg-backgroundHover hover:opacity-100 hover:shadow-lg'
-          >
-            +
-          </button>
-        ) : null}
+        <div className='grid-spot'>
+          <GridSpotContentComponent
+            type={content.getContent()}
+            name={'TESTING'}
+            editMode={editMode}
+            x={trueX}
+            y={trueY}
+            width={trueWidth}
+            height={trueHeight}
+          />
+        </div>
       </div>
-      {/* {showPopup && (
-        <GridSpotPopup onClose={handleClosePopup} onConfirm={() => return null} />
-      )} */}
     </>
   );
 }

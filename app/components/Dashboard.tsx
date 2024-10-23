@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Dashboard from '../classes/Dashboard';
 import GridSpotContent from '../classes/GridSpotContent';
 import GridSpot from './ui/GridSpot';
+import GridSpotPopup from './ui/GridSpotPopup';
+import { ECharts } from 'echarts';
 
 function saveDashboard() {
   // TODO functionality to save dashboard
@@ -37,13 +39,23 @@ export default function DashboardRenderer({
   const [grids, setGrids] = useState<GridSpotContent[]>([]);
   const [running, setRunning] = useState(false); // this runs ALL GRID SPOTS
   const [editState, setEditState] = useState(false); // this is for editing the dashboard
+  const [adding, setAdding] = useState(false); // this is for adding a grid spot
 
   // editing dashboard name
   const [isEditing, setIsEditing] = useState(false);
   const [dashboardName, setDashboardName] = useState(dashboard.getName());
 
-  function addGrid() {
-    setGrids((currData) => [...currData, new GridSpotContent('hello world')]);
+  function addGrid(chartType: ECharts | null) {
+    setGrids((currData) => [
+      ...currData,
+      new GridSpotContent(
+        chartType,
+        window.innerWidth / 2,
+        window.innerHeight / 2,
+        400,
+        200
+      ),
+    ]);
     setNumBoxes((currVal) => (currVal += 1));
   }
 
@@ -132,7 +144,6 @@ export default function DashboardRenderer({
           </div>
         </div>
         <div className='flex flex-row gap-4'>
-          <button onClick={() => addGrid()}>Add Button</button>
           <button
             onClick={() => {
               setRunning(!running);
@@ -143,6 +154,21 @@ export default function DashboardRenderer({
           >
             {!running ? '▶' : '⏹'}
           </button>
+          <button
+            onClick={() => setAdding(true)}
+            className='w-32 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
+          >
+            Add Content
+          </button>
+          {adding && (
+            <GridSpotPopup
+              onClose={() => setAdding(false)}
+              onConfirm={(content: ECharts | null) => {
+                addGrid(content); // this is what selection ends up going to
+                setAdding(false);
+              }}
+            />
+          )}
           <button
             onClick={() => setEditState(!editState)}
             className='w-20 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
@@ -173,7 +199,15 @@ export default function DashboardRenderer({
       </header>
 
       {grids.map((x: GridSpotContent, index) => (
-        <GridSpot content={x} editMode={editState} />
+        <GridSpot
+          key={index}
+          content={x}
+          editMode={editState}
+          x={x.getX()}
+          y={x.getY()}
+          width={x.getWidth()}
+          height={x.getHeight()}
+        />
       ))}
     </div>
   );

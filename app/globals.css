@@ -32,31 +32,10 @@ body {
 }
 
 .grid-spot {
-  border: none;
-  border: 2px dashed #f0f0f0;
-  min-width: calc(10vw);
-  min-height: calc(10vw);
-  max-width: calc(10vw);
-  max-height: calc(10vw);
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.grid-spot-nonadj {
-  border: none;
-  border: 2px dashed #f0f0f06f;
-  min-width: calc(10vw);
-  min-height: calc(10vw);
-  max-width: calc(10vw);
-  max-height: calc(10vw);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.grid-spot-nonadj:hover {
-  border: 2px dashed #f0f0f0; /* Change border on hover for non-adjacent */
 }
 
 .grid-spot-text {
@@ -68,10 +47,6 @@ body {
   font-weight: thin;
   line-height: 1;
   padding: 0;
-}
-
-.grid-spot-nonadj:hover .grid-spot-text {
-  opacity: 100%;
 }
 
 .dashboard-header {
@@ -90,4 +65,14 @@ body {
 
 .grid-row {
   display: flex;
+}
+
+.grid-spot-content {
+  border: 4px dashed #2fc800;
+  border-radius: 3px;
+}
+
+.grid-spot-content-edit {
+  border: 4px dashed #f2f913;
+  border-radius: 3px;
 }
