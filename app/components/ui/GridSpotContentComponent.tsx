@@ -62,6 +62,12 @@ export default function GridSpotContentComponent({
       ],
     };
 
+    setInterval(() => {
+      if (running) {
+        grapher.tick();
+      }
+    }, 20);
+
     // Display the chart using the configuration items and data just specified.
     chartRef.current.setOption(option);
 

@@ -37,6 +37,7 @@ export class Grapher {
     this.isRunning = false;
   }
 
+  // TODO NEEDS REWRITING
   public tick(): { status: 'success' | 'failure' } {
     if (!this.isRunning) {
       return { status: 'success' };
