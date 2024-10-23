@@ -1,9 +1,9 @@
-import { ECharts } from 'echarts';
+import { Options } from '@/app/classes/Options';
 import React from 'react';
 
 interface InfoPopupProps {
   onClose: () => void;
-  onConfirm: (content: ECharts | null) => void;
+  onConfirm: (content: Options) => void;
 }
 
 const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
@@ -23,7 +23,7 @@ const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
         <div className='flex justify-end'>
           <button
             onClick={() => {
-              onConfirm(null); // null for now
+              onConfirm({}); // TODO null for now
             }}
             className='mt-5 rounded-full px-4 py-2 text-xl font-bold transition-all duration-200 hover:bg-blue-200 hover:shadow-lg'
           >

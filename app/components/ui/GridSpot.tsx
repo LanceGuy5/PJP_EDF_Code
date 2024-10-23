@@ -12,7 +12,7 @@ interface GridSpotProps {
 }
 
 export default function GridSpot({
-  content,
+  content, // TODO figure out what I need this for (if anything)
   editMode,
   x,
   y,
@@ -39,7 +39,7 @@ export default function GridSpot({
       >
         <div className='grid-spot'>
           <GridSpotContentComponent
-            type={content.getContent()}
+            options={content.getContent()}
             name={'TESTING'}
             editMode={editMode}
             x={trueX}

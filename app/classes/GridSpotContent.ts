@@ -1,14 +1,15 @@
 import { ECharts } from 'echarts';
+import { Options } from 'electron';
 
 export default class GridSpotContent {
-  private content: ECharts | null;
+  private content: Options;
   private x: number;
   private y: number;
   private width: number;
   private height: number;
 
   constructor(
-    content: ECharts | null,
+    content: Options,
     x: number,
     y: number,
     width: number,
@@ -21,7 +22,7 @@ export default class GridSpotContent {
     this.height = height;
   }
 
-  getContent(): ECharts | null {
+  getContent(): Options {
     return this.content;
   }
 
@@ -41,7 +42,7 @@ export default class GridSpotContent {
     return this.height;
   }
 
-  setContent(content: ECharts | null): void {
+  setContent(content: Options): void {
     this.content = content;
   }
 

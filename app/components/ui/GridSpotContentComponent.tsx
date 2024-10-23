@@ -3,9 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import { ECharts } from 'echarts';
 import * as echarts from 'echarts';
 import { LOG } from '@/app/helpers/util';
+import { Options } from '@/app/classes/Options';
 
 interface GridSpotContentProps {
-  type: ECharts | null;
+  options: Options;
   name: string;
   editMode: boolean;
   x: number;
@@ -18,7 +19,7 @@ interface GridSpotContentProps {
  * Act as wrapper for grid content!
  */
 export default function GridSpotContentComponent({
-  type,
+  options,
   name,
   editMode,
   x,
@@ -29,7 +30,7 @@ export default function GridSpotContentComponent({
   const [running, setRunning] = useState(false);
   const [retracted, setRetracted] = useState(false);
 
-  const chartRef = useRef<ECharts | null>(type); // Create a ref to hold the chart instance
+  const chartRef = useRef<ECharts | null>(null); // Create a ref to hold the chart instance
   const seriesRef = useRef<{ x: number; y: number }[]>([]); // Ref for persistent series data
   const grapher = new Grapher(chartRef); // Grapher that can map to a serial port
 
@@ -45,23 +46,6 @@ export default function GridSpotContentComponent({
       document.getElementById('chartContainer') as HTMLDivElement
     );
 
-    // Specify the configuration items and data for the chart
-    const option = {
-      xAxis: {
-        type: 'value',
-      },
-      yAxis: {
-        type: 'value',
-      },
-      series: [
-        {
-          data: seriesRef.current,
-          type: 'line',
-          smooth: true,
-        },
-      ],
-    };
-
     setInterval(() => {
       if (running) {
         grapher.tick();
@@ -69,7 +53,7 @@ export default function GridSpotContentComponent({
     }, 20);
 
     // Display the chart using the configuration items and data just specified.
-    chartRef.current.setOption(option);
+    chartRef.current.setOption(options);
 
     // Clean up the chart when the component unmounts
     return () => {
