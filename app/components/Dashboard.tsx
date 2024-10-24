@@ -6,8 +6,8 @@ import Dashboard from '../classes/Dashboard';
 import GridSpotContent from '../classes/GridSpotContent';
 import GridSpot from './ui/GridSpot';
 import GridSpotPopup from './ui/GridSpotPopup';
-import { ECharts } from 'echarts';
 import { ECBasicOption } from 'echarts/types/dist/shared';
+import { LOG } from '../helpers/util';
 
 function saveDashboard() {
   // TODO functionality to save dashboard
@@ -54,10 +54,11 @@ export default function DashboardRenderer({
         window.innerWidth / 2,
         window.innerHeight / 2,
         400,
-        200
+        400
       ),
     ]);
     setNumBoxes((currVal) => (currVal += 1));
+    LOG('BOXES: ' + numBoxes);
   }
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

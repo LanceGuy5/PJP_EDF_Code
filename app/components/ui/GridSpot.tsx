@@ -46,6 +46,7 @@ export default function GridSpot({
             y={trueY}
             width={trueWidth}
             height={trueHeight}
+            onDelete={() => console.log('Delete')}
           />
         </div>
       </div>
