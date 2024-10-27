@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
-const { listPorts, readFromPort } = require('../helpers/ports.js');
+const { listPorts, readFromPort, stopReading } = require('../helpers/ports.js');
 
 let serve;
 const serialPorts = [];
@@ -67,13 +67,10 @@ app.on('ready', () => {
   });
   ipcMain.handle('readFromPort', async (event, path, options) => {
     const serialPort = readFromPort(path, options);
-    // TODO assign each one to a different id
     serialPorts.push(serialPort);
   });
-  ipcMain.handle('stopAllReadings', async () => {
-    serialPorts.forEach((port) => {
-      port.close();
-    });
+  ipcMain.handle('stopReading', async (event, path) => {
+    serialPorts.find((port) => port.path === path).close();
   });
 });
 

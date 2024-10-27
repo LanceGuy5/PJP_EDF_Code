@@ -5,22 +5,14 @@ import { useState } from 'react';
 interface GridSpotProps {
   index: number;
   content: GridSpotContent;
-  editMode: boolean; // Whether the dashboard is in edit mode
-  // x: number;
-  // y: number;
-  // width: number;
-  // height: number;
+  editMode: boolean;
   onDelete: (x: number) => void;
 }
 
 export default function GridSpot({
   index,
-  content, // TODO figure out what I need this for (if anything)
+  content,
   editMode,
-  // x,
-  // y,
-  // width,
-  // height,
   onDelete,
 }: GridSpotProps) {
   // TODO setXXX functions are for moving/resizing

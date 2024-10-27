@@ -1,6 +1,7 @@
+import { ERROR, LOG } from '@/app/helpers/util';
 import { ChartType, DataOption } from '@/app/types/ChartOptions';
 import { ECBasicOption } from 'echarts/types/dist/shared';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface InfoPopupProps {
   onClose: () => void;
@@ -9,27 +10,13 @@ interface InfoPopupProps {
 
 const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
   // Form state to manage user input
-  const [port, setPort] = useState<string | null>(null); // TODO FIX
+  const [ports, setPorts] = useState<string[]>([]);
+  const [selectedPort, setSelectedPort] = useState<string | null>(null);
   const [xAxisType, setXAxisType] = useState<DataOption>('category');
   const [xAxisData, setXAxisData] = useState<string>('A,B,C,D,E'); // Comma-separated values
   const [yAxisType, setYAxisType] = useState<DataOption>('value');
   const [seriesType, setSeriesType] = useState<ChartType>('rigid-line');
   const [seriesData, setSeriesData] = useState<string>('1,2,3,4,5'); // Comma-separated values
-
-  // const listPorts = async () => {
-  //   try {
-  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //     if (typeof window !== 'undefined' && (window as any).electronAPI) {
-  //       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //       const result = await (window as any).electronAPI.listPorts();
-  //       LOG(result);
-  //     } else {
-  //       LOG('Electron API not available in this environment');
-  //     }
-  //   } catch (error) {
-  //     ERROR(`Error loading dashboard: ${error}`);
-  //   }
-  // };
 
   const handleSubmit = () => {
     const xAxisArray = xAxisData.split(',').map((item) => item.trim());
@@ -57,9 +44,29 @@ const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
           },
         ],
       },
-      port!
+      selectedPort!
     );
   };
+
+  useEffect(() => {
+    const fetchPorts = async () => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (typeof window !== 'undefined' && (window as any).electronAPI) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const result: string = await (window as any).electronAPI.listPorts();
+          const ret = result.substring(0, result.length - 1).split('&');
+          setPorts(ret); // Set the ports array in state
+        } else {
+          LOG('Electron API not available in this environment');
+        }
+      } catch (error) {
+        ERROR(`Error getting ports: ${error}`);
+      }
+    };
+
+    fetchPorts();
+  }, []);
 
   return (
     <div style={styles.overlay}>
@@ -78,14 +85,17 @@ const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
           <label className='block text-left text-lg font-medium'>Port</label>
           <select
             className='w-full rounded border border-gray-300 p-2'
-            value={xAxisType}
-            onChange={(e) => setXAxisType(e.target.value as DataOption)}
+            value={selectedPort || ''}
+            onChange={(e) => setSelectedPort(e.target.value as string)}
           >
             <option value='' disabled>
               Select port...
             </option>
-            <option value='category'>Category</option>
-            <option value='value'>Value</option>
+            {ports.map((port, index) => (
+              <option key={index} value={port}>
+                {port}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -161,8 +171,8 @@ const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
             <button
               type='button'
               onClick={handleSubmit}
-              disabled={!port} // Disable if port is null or undefined
-              className={`mt-5 rounded-full px-4 py-2 text-xl font-bold transition-all duration-200 ${!port ? 'cursor-not-allowed bg-gray-300 text-gray-500' : 'hover:bg-blue-200 hover:shadow-lg'}`}
+              disabled={!selectedPort} // Disable if port is null or undefined
+              className={`mt-5 rounded-full px-4 py-2 text-xl font-bold transition-all duration-200 ${!selectedPort ? 'cursor-not-allowed bg-gray-300 text-gray-500' : 'hover:bg-blue-200 hover:shadow-lg'}`}
             >
               Add
             </button>

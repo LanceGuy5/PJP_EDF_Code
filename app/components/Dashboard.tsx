@@ -9,6 +9,8 @@ import GridSpotPopup from './ui/GridSpotPopup';
 import { ECBasicOption } from 'echarts/types/dist/shared';
 import { ERROR, LOG } from '../helpers/util';
 
+// TESTING FUNCTIONS FOR API ROUTES:
+
 const listPorts = async () => {
   try {
     LOG('Listing ports...');
@@ -16,7 +18,8 @@ const listPorts = async () => {
     if (typeof window !== 'undefined' && (window as any).electronAPI) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result: string = await (window as any).electronAPI.listPorts();
-      const ret = result.split('&');
+      const ret = result.substring(0, result.length - 1).split('&');
+      console.log(ret);
     } else {
       LOG('Electron API not available in this environment');
     }
@@ -24,6 +27,7 @@ const listPorts = async () => {
     ERROR(`Error loading dashboard: ${error}`);
   }
 };
+
 async function readFromPort(): Promise<void> {
   try {
     LOG('Listing ports...');
@@ -44,6 +48,7 @@ async function readFromPort(): Promise<void> {
     ERROR(`bro: ${error}`);
   }
 }
+
 async function stopAllReadings(): Promise<void> {
   try {
     LOG('Stopping readings...');
@@ -59,6 +64,8 @@ async function stopAllReadings(): Promise<void> {
     ERROR(`bro: ${error}`);
   }
 }
+
+// END TESTING FUNCTIONS
 
 function saveDashboard() {
   // TODO functionality to save dashboard
@@ -92,7 +99,7 @@ export default function DashboardRenderer({
   const [running, setRunning] = useState(false); // this runs ALL GRID SPOTS
   const [editState, setEditState] = useState(false); // this is for editing the dashboard
   const [adding, setAdding] = useState(false); // this is for adding a grid spot
-  const [isTesting, setIsTesting] = useState(true); // this is for testing the dashboard
+  const [isTesting, setIsTesting] = useState(false); // this is for testing the dashboard
 
   // editing dashboard name
   const [isEditing, setIsEditing] = useState(false);

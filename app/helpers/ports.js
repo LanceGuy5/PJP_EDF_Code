@@ -24,7 +24,7 @@ function readFromPort(path, options) {
     const serial = new SerialPort({ path, ...options });
     serial.on('data', (data) => {
       const sensorData = data.toString();
-      const parsedData = sensorData.split('#');
+      const parsedData = sensorData.split(',');
       parsedData.forEach((sensor) => {
         if (sensor.trim() !== '') {
           console.log(`Sensor data: ${sensor}`);
@@ -41,4 +41,14 @@ function readFromPort(path, options) {
   }
 }
 
-module.exports = { listPorts, readFromPort };
+function stopReading(path) {
+  try {
+    const serial = new SerialPort({ path });
+    serial.close();
+  } catch (error) {
+    console.error('Error closing SerialPort:', error);
+    throw error; // Re-throw the error to handle it at a higher level if needed
+  }
+}
+
+module.exports = { listPorts, readFromPort, stopReading };

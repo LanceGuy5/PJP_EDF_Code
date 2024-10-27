@@ -28,8 +28,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     );
     return serialPort;
   },
-  stopAllReadings: async () => {
+  stopReading: async (params) => {
     console.log('[PRELOAD]: stopAllReadings called');
-    await ipcRenderer.invoke('stopAllReadings');
+    await ipcRenderer.invoke('stopReading'.params.path);
   },
 });
