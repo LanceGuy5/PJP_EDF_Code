@@ -44,7 +44,7 @@ const createWindow = async () => {
     });
   } else {
     win.loadURL('http://localhost:3000');
-    // win.webContents.openDevTools(); // only use if devtools needs to be open
+    win.webContents.openDevTools(); // only use if devtools needs to be open
     win.webContents.on('did-fail-load', (e, code, desc) => {
       win.webContents.reloadIgnoringCache();
     });
@@ -69,6 +69,11 @@ app.on('ready', () => {
     const serialPort = readFromPort(path, options);
     // TODO assign each one to a different id
     serialPorts.push(serialPort);
+  });
+  ipcMain.handle('stopAllReadings', async () => {
+    serialPorts.forEach((port) => {
+      port.close();
+    });
   });
 });
 

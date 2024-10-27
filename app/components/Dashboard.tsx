@@ -7,7 +7,58 @@ import GridSpotContent from '../classes/GridSpotContent';
 import GridSpot from './ui/GridSpot';
 import GridSpotPopup from './ui/GridSpotPopup';
 import { ECBasicOption } from 'echarts/types/dist/shared';
-import { LOG } from '../helpers/util';
+import { ERROR, LOG } from '../helpers/util';
+
+const listPorts = async () => {
+  try {
+    LOG('Listing ports...');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof window !== 'undefined' && (window as any).electronAPI) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = await (window as any).electronAPI.listPorts();
+      LOG(result);
+    } else {
+      LOG('Electron API not available in this environment');
+    }
+  } catch (error) {
+    ERROR(`Error loading dashboard: ${error}`);
+  }
+};
+async function readFromPort(): Promise<void> {
+  try {
+    LOG('Listing ports...');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof window !== 'undefined' && (window as any).electronAPI) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = await (window as any).electronAPI.readFromPort({
+        path: '/dev/tty.usbmodem101',
+        options: {
+          baudRate: 9600,
+        },
+      });
+      LOG(result);
+    } else {
+      LOG('Electron API not available in this environment');
+    }
+  } catch (error) {
+    ERROR(`bro: ${error}`);
+  }
+}
+async function stopAllReadings(): Promise<void> {
+  try {
+    LOG('Stopping readings...');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof window !== 'undefined' && (window as any).electronAPI) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = await (window as any).electronAPI.stopAllReadings();
+      LOG(result);
+    } else {
+      LOG('Electron API not available in this environment');
+    }
+  } catch (error) {
+    ERROR(`bro: ${error}`);
+  }
+}
 
 function saveDashboard() {
   // TODO functionality to save dashboard
@@ -41,23 +92,34 @@ export default function DashboardRenderer({
   const [running, setRunning] = useState(false); // this runs ALL GRID SPOTS
   const [editState, setEditState] = useState(false); // this is for editing the dashboard
   const [adding, setAdding] = useState(false); // this is for adding a grid spot
+  const [isTesting, setIsTesting] = useState(true); // this is for testing the dashboard
 
   // editing dashboard name
   const [isEditing, setIsEditing] = useState(false);
   const [dashboardName, setDashboardName] = useState(dashboard.getName());
 
-  function addGrid(chartType: ECBasicOption) {
+  function addGrid(options: ECBasicOption) {
     setGrids((currData) => [
       ...currData,
       new GridSpotContent(
-        chartType,
-        window.innerWidth / 2,
-        window.innerHeight / 2,
+        options,
+        window.innerWidth / 2 + 20 * numBoxes,
+        window.innerHeight / 2 + 20 * numBoxes,
         400,
         400
       ),
     ]);
     setNumBoxes((currVal) => (currVal += 1));
+    LOG('BOXES: ' + numBoxes);
+  }
+
+  function removeGrid(index: number) {
+    setGrids((currData) => {
+      const newData = [...currData];
+      newData.splice(index, 1);
+      return newData;
+    });
+    setNumBoxes((currVal) => (currVal -= 1));
     LOG('BOXES: ' + numBoxes);
   }
 
@@ -98,7 +160,30 @@ export default function DashboardRenderer({
     updateWidth();
   }, [dashboardName]);
 
-  return (
+  return isTesting ? (
+    <>
+      <div className='flex-rows mt-10 flex justify-center'>
+        <button
+          onClick={() => listPorts()}
+          className='w-32 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
+        >
+          LIST PORTS
+        </button>
+        <button
+          onClick={() => readFromPort()}
+          className='w-32 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
+        >
+          READ FROM PORT
+        </button>
+        <button
+          onClick={() => stopAllReadings()}
+          className='w-32 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
+        >
+          STOPPING READINGS
+        </button>
+      </div>
+    </>
+  ) : (
     <div>
       <header className='dashboard-header'>
         <div className='flex flex-row gap-4'>
@@ -118,7 +203,6 @@ export default function DashboardRenderer({
                 >
                   {dashboardName}
                 </span>
-                {/*TODO fix illegal characters*/}
                 <input
                   type='text'
                   value={dashboardName}
@@ -166,7 +250,7 @@ export default function DashboardRenderer({
             <GridSpotPopup
               onClose={() => setAdding(false)}
               onConfirm={(content: ECBasicOption) => {
-                addGrid(content); // this is what selection ends up going to
+                addGrid(content);
                 setAdding(false);
               }}
             />
@@ -203,12 +287,10 @@ export default function DashboardRenderer({
       {grids.map((x: GridSpotContent, index) => (
         <GridSpot
           key={index}
+          index={index}
           content={x}
           editMode={editState}
-          x={x.getX()}
-          y={x.getY()}
-          width={x.getWidth()}
-          height={x.getHeight()}
+          onDelete={() => removeGrid(index)}
         />
       ))}
     </div>

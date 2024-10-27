@@ -3,27 +3,31 @@ import GridSpotContentComponent from './GridSpotContentComponent';
 import { useState } from 'react';
 
 interface GridSpotProps {
+  index: number;
   content: GridSpotContent;
   editMode: boolean; // Whether the dashboard is in edit mode
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+  // x: number;
+  // y: number;
+  // width: number;
+  // height: number;
+  onDelete: (x: number) => void;
 }
 
 export default function GridSpot({
+  index,
   content, // TODO figure out what I need this for (if anything)
   editMode,
-  x,
-  y,
-  width,
-  height,
+  // x,
+  // y,
+  // width,
+  // height,
+  onDelete,
 }: GridSpotProps) {
   // TODO setXXX functions are for moving/resizing
-  const [trueWidth, setTrueWidth] = useState(width);
-  const [trueHeight, setTrueHeight] = useState(height);
-  const [trueX, setTrueX] = useState(x);
-  const [trueY, setTrueY] = useState(y);
+  const [trueWidth, setTrueWidth] = useState(content.getWidth());
+  const [trueHeight, setTrueHeight] = useState(content.getHeight());
+  const [trueX, setTrueX] = useState(content.getX());
+  const [trueY, setTrueY] = useState(content.getY());
   return (
     <>
       <div
@@ -39,14 +43,12 @@ export default function GridSpot({
       >
         <div className='grid-spot'>
           <GridSpotContentComponent
+            index={index}
             options={content.getContent()}
             name={'TESTING'}
             editMode={editMode}
-            x={trueX}
-            y={trueY}
-            width={trueWidth}
-            height={trueHeight}
-            onDelete={() => console.log('Delete')}
+            content={content}
+            onDelete={onDelete}
           />
         </div>
       </div>

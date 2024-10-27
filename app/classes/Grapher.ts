@@ -17,13 +17,13 @@ export class Grapher {
     // this.port = new PortReader('COM6', {baudRate: 9600});
   }
 
-  public recieveData(data: DataPoint<number>): {
+  public receiveData(data: DataPoint<number>): {
     status: 'success' | 'failure';
   } {
     try {
       this.queue.enqueue(data);
     } catch (e) {
-      ERROR(`Data recieve: ${e}`);
+      ERROR(`Data receive: ${e}`);
       return { status: `failure` };
     }
     return { status: 'success' };

@@ -3,29 +3,26 @@ import { useEffect, useRef, useState } from 'react';
 import { ECharts } from 'echarts';
 import * as echarts from 'echarts';
 import { ECBasicOption } from 'echarts/types/dist/shared';
+import GridSpotContent from '@/app/classes/GridSpotContent';
 
 interface GridSpotContentProps {
+  index: number;
   options: ECBasicOption;
   name: string;
   editMode: boolean;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  onDelete: () => void;
+  content: GridSpotContent;
+  onDelete: (x: number) => void;
 }
 
 /**
  * Act as wrapper for grid content!
  */
 export default function GridSpotContentComponent({
+  index,
   options,
   name,
   editMode,
-  x,
-  y,
-  width,
-  height,
+  content,
   onDelete,
 }: GridSpotContentProps) {
   const [running, setRunning] = useState(false);
@@ -35,45 +32,43 @@ export default function GridSpotContentComponent({
   const seriesRef = useRef<{ x: number; y: number }[]>([]); // Ref for persistent series data
   const grapher = new Grapher(chartRef); // Grapher that can map to a serial port
 
-  // TODO MAKE THIS WORK LATER
-  // onDelete = () => {
-  //   if (chartRef.current) {
-  //     LOG('Destroying chart...');
-  //     chartRef.current.clear();
-  //     chartRef.current.dispose();
-  //   }
-  // }
-
   // TODO setXXX functions are for moving/resizing
-  const [trueWidth, setTrueWidth] = useState(width);
-  const [trueHeight, setTrueHeight] = useState(height);
-  const [trueX, setTrueX] = useState(x);
-  const [trueY, setTrueY] = useState(y);
+  const [trueWidth, setTrueWidth] = useState(content.getWidth());
+  const [trueHeight, setTrueHeight] = useState(content.getHeight());
+  const [trueX, setTrueX] = useState(content.getX());
+  const [trueY, setTrueY] = useState(content.getY());
 
   // for moving grid objects
   const [dragging, setDragging] = useState(false);
   // const [resizing, setResizing] = useState(false);
   const dragStartRef = useRef<{ startX: number; startY: number } | null>({
-    startX: x,
-    startY: y,
+    startX: trueX,
+    startY: trueY,
   });
   // const resizeStartRef = useRef<{ startWidth: number; startHeight: number } | null>(null);
 
   useEffect(() => {
-    // Create and mount the chart when the component mounts
-    chartRef.current = echarts.init(
-      document.getElementById('chartContainer') as HTMLDivElement
-    );
+    // Clean up existing chart instance if it exists
+    if (chartRef.current) {
+      chartRef.current.dispose();
+    }
 
-    setInterval(() => {
-      if (running) {
-        grapher.tick();
-      }
-    }, 20);
+    // Initialize a new chart instance
+    const container = document.getElementById(
+      `chartContainer-${index}`
+    ) as HTMLDivElement;
+    chartRef.current = echarts.init(container);
 
-    // Display the chart using the configuration items and data just specified.
+    // Set initial chart options
     chartRef.current.setOption(options);
-  });
+
+    // Cleanup on component unmount
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.dispose();
+      }
+    };
+  }, [options, index]); // Dependency array to control when useEffect re-runs
 
   const handleDragStart = (e: React.MouseEvent) => {
     setDragging(true);
@@ -138,7 +133,13 @@ export default function GridSpotContentComponent({
         </p>
         {editMode && (
           <button
-            onClick={onDelete}
+            onClick={() => {
+              if (chartRef.current) {
+                chartRef.current.clear();
+                chartRef.current.dispose();
+              }
+              onDelete(index);
+            }}
             style={{
               position: 'absolute',
               top: '-15px',
@@ -182,7 +183,7 @@ export default function GridSpotContentComponent({
           {!running ? '▶' : '⏹'}
         </button>
       </header>
-      <div id='chartContainer' className='h-full w-full' />
+      <div id={`chartContainer-${index}`} className='h-full w-full' />
       {/* Cover for edit mode -> uninteractable */}
       {editMode && (
         <>

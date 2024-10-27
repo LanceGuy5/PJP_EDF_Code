@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import SerialPort from 'serialport';
+import { SerialPort } from 'serialport';
 import { LOG } from '../helpers/util';
 
 export class PortReader extends EventEmitter {
@@ -7,9 +7,12 @@ export class PortReader extends EventEmitter {
 
   constructor(serialPort: string, params: { baudRate?: number }) {
     super();
-    this.serialPort = new SerialPort(serialPort, {
-      baudRate: params.baudRate || 9600,
-    });
+    this.serialPort = new SerialPort(
+      serialPort
+      // {
+      //   baudRate: params.baudRate || 9600,
+      // }
+    );
     this.serialPort.open((err) => {
       if (err) {
         return console.error('Error opening the port:', err.message);
