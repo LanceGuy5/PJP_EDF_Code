@@ -6,19 +6,22 @@ export default class GridSpotContent {
   private y: number;
   private width: number;
   private height: number;
+  private port: string;
 
   constructor(
     content: ECBasicOption,
     x: number,
     y: number,
     width: number,
-    height: number
+    height: number,
+    port: string
   ) {
     this.content = content;
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
+    this.port = port;
   }
 
   getContent(): ECBasicOption {
@@ -41,6 +44,10 @@ export default class GridSpotContent {
     return this.height;
   }
 
+  getPort(): string {
+    return this.port;
+  }
+
   setContent(content: ECBasicOption): void {
     this.content = content;
   }
@@ -59,5 +66,9 @@ export default class GridSpotContent {
 
   setHeight(height: number): void {
     this.height = height;
+  }
+
+  setPort(port: string): void {
+    this.port = port;
   }
 }

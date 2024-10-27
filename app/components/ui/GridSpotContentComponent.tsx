@@ -1,4 +1,3 @@
-import { Grapher } from '@/app/classes/Grapher';
 import { useEffect, useRef, useState } from 'react';
 import { ECharts } from 'echarts';
 import * as echarts from 'echarts';
@@ -30,7 +29,6 @@ export default function GridSpotContentComponent({
 
   const chartRef = useRef<ECharts | null>(null); // Create a ref to hold the chart instance
   const seriesRef = useRef<{ x: number; y: number }[]>([]); // Ref for persistent series data
-  const grapher = new Grapher(chartRef); // Grapher that can map to a serial port
 
   // TODO setXXX functions are for moving/resizing
   const [trueWidth, setTrueWidth] = useState(content.getWidth());
@@ -168,12 +166,7 @@ export default function GridSpotContentComponent({
         </button>
         <button
           onClick={() => {
-            setRunning(!running);
-            if (running) {
-              grapher.start();
-            } else {
-              grapher.stop();
-            }
+            // TODO HERE WE CAN DO SOME STUFF
           }}
           className={`w-12 transform rounded-md ${
             !running ? 'bg-green-500' : 'bg-red-500'

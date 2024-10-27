@@ -9,7 +9,7 @@ function listPorts() {
     .then((ports) => {
       let ret = ''; // Declare ret inside the function scope
       ports.forEach((port) => {
-        ret += `Port: ${port.path}, PnP ID: ${port.pnpId || 'N/A'}, Manufacturer: ${port.manufacturer || 'N/A'}\n`;
+        ret += `Port: ${port.path}, PnP ID: ${port.pnpId || 'N/A'}, Manufacturer: ${port.manufacturer || 'N/A'}&`;
       });
       return ret; // Return the result after processing the ports
     })

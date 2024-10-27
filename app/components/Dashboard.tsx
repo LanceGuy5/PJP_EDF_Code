@@ -15,8 +15,8 @@ const listPorts = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (typeof window !== 'undefined' && (window as any).electronAPI) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await (window as any).electronAPI.listPorts();
-      LOG(result);
+      const result: string = await (window as any).electronAPI.listPorts();
+      const ret = result.split('&');
     } else {
       LOG('Electron API not available in this environment');
     }
@@ -33,7 +33,7 @@ async function readFromPort(): Promise<void> {
       const result = await (window as any).electronAPI.readFromPort({
         path: '/dev/tty.usbmodem101',
         options: {
-          baudRate: 9600,
+          baudRate: 57600,
         },
       });
       LOG(result);
@@ -98,7 +98,7 @@ export default function DashboardRenderer({
   const [isEditing, setIsEditing] = useState(false);
   const [dashboardName, setDashboardName] = useState(dashboard.getName());
 
-  function addGrid(options: ECBasicOption) {
+  function addGrid(options: ECBasicOption, port: string) {
     setGrids((currData) => [
       ...currData,
       new GridSpotContent(
@@ -106,7 +106,8 @@ export default function DashboardRenderer({
         window.innerWidth / 2 + 20 * numBoxes,
         window.innerHeight / 2 + 20 * numBoxes,
         400,
-        400
+        400,
+        port
       ),
     ]);
     setNumBoxes((currVal) => (currVal += 1));
@@ -249,8 +250,8 @@ export default function DashboardRenderer({
           {adding && (
             <GridSpotPopup
               onClose={() => setAdding(false)}
-              onConfirm={(content: ECBasicOption) => {
-                addGrid(content);
+              onConfirm={(content: ECBasicOption, port: string) => {
+                addGrid(content, port);
                 setAdding(false);
               }}
             />
