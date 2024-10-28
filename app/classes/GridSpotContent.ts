@@ -24,7 +24,7 @@ export default class GridSpotContent {
     this.port = port;
   }
 
-  getContent(): ECBasicOption {
+  getOptions(): ECBasicOption {
     return this.content;
   }
 
@@ -44,11 +44,26 @@ export default class GridSpotContent {
     return this.height;
   }
 
-  getPort(): string {
+  getPortInfo(): string {
     return this.port;
   }
 
-  setContent(content: ECBasicOption): void {
+  getPortPath(): string {
+    const x = this.port.split(',')[0];
+    return x.substring(x.indexOf(':') + 1).trim();
+  }
+
+  getPNPId(): string {
+    const x = this.port.split(',')[1];
+    return x.substring(x.indexOf(':') + 1).trim();
+  }
+
+  getManufacturer(): string {
+    const x = this.port.split(',')[2];
+    return x.substring(x.indexOf(':') + 1).trim();
+  }
+
+  setOptions(content: ECBasicOption): void {
     this.content = content;
   }
 

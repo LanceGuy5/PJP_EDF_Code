@@ -1,9 +1,10 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
-const { listPorts, readFromPort, stopReading } = require('../helpers/ports.js');
+const { listPorts, readFromPort } = require('../helpers/ports.js');
 
 let serve;
-const serialPorts = [];
+const serialPorts = {}; // {path: index[]}
+const pathToObjectMap = {}; // {path: serialPort}
 
 const createWindow = async () => {
   console.log(`[APP]: ${path.join(__dirname, '../icon.png')}`);
@@ -65,12 +66,28 @@ app.on('ready', () => {
     const result = await listPorts();
     return result;
   });
-  ipcMain.handle('readFromPort', async (event, path, options) => {
-    const serialPort = readFromPort(path, options);
-    serialPorts.push(serialPort);
+  ipcMain.handle('readFromPort', async (event, path, options, index) => {
+    if (serialPorts[path] && serialPorts[path].includes(index)) {
+      return pathToObjectMap[path];
+    }
+    if (serialPorts[path]) {
+      serialPorts[path].append(index);
+    } else {
+      const serialPort = readFromPort(path, options);
+      serialPorts[path] = [index];
+      pathToObjectMap[path] = serialPort;
+    }
+    return pathToObjectMap[path];
   });
-  ipcMain.handle('stopReading', async (event, path) => {
-    serialPorts.find((port) => port.path === path).close();
+  ipcMain.handle('stopReading', async (event, path, index) => {
+    if (serialPorts[path] && serialPorts[path].includes(index)) {
+      serialPorts[path].splice(serialPorts[path].indexOf(index), 1);
+      if (serialPorts[path].length === 0) {
+        pathToObjectMap[path].close();
+        delete pathToObjectMap[path];
+        delete serialPorts[path];
+      }
+    }
   });
 });
 

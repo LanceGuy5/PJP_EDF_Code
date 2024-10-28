@@ -35,10 +35,11 @@ async function readFromPort(): Promise<void> {
     if (typeof window !== 'undefined' && (window as any).electronAPI) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await (window as any).electronAPI.readFromPort({
-        path: '/dev/tty.usbmodem101',
+        path: '/dev/tty.usbmodem1101',
         options: {
-          baudRate: 57600,
+          baudRate: 9600,
         },
+        index: 0,
       });
       LOG(result);
     } else {
@@ -55,7 +56,10 @@ async function stopAllReadings(): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (typeof window !== 'undefined' && (window as any).electronAPI) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await (window as any).electronAPI.stopAllReadings();
+      const result = await (window as any).electronAPI.stopReading({
+        path: '/dev/tty.usbmodem1101',
+        index: 0,
+      });
       LOG(result);
     } else {
       LOG('Electron API not available in this environment');

@@ -36,7 +36,6 @@ export default function GridSpot({
         <div className='grid-spot'>
           <GridSpotContentComponent
             index={index}
-            options={content.getContent()}
             name={'TESTING'}
             editMode={editMode}
             content={content}

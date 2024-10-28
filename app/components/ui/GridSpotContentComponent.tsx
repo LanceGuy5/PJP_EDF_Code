@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { ECharts } from 'echarts';
 import * as echarts from 'echarts';
-import { ECBasicOption } from 'echarts/types/dist/shared';
 import GridSpotContent from '@/app/classes/GridSpotContent';
 
 interface GridSpotContentProps {
   index: number;
-  options: ECBasicOption;
   name: string;
   editMode: boolean;
   content: GridSpotContent;
@@ -18,7 +16,6 @@ interface GridSpotContentProps {
  */
 export default function GridSpotContentComponent({
   index,
-  options,
   name,
   editMode,
   content,
@@ -58,7 +55,7 @@ export default function GridSpotContentComponent({
     chartRef.current = echarts.init(container);
 
     // Set initial chart options
-    chartRef.current.setOption(options);
+    chartRef.current.setOption(content.getOptions());
 
     // Cleanup on component unmount
     return () => {
@@ -66,7 +63,40 @@ export default function GridSpotContentComponent({
         chartRef.current.dispose();
       }
     };
-  }, [options, index]); // Dependency array to control when useEffect re-runs
+  }, [content, index]); // Dependency array to control when useEffect re-runs
+
+  const readData = async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof window !== 'undefined' && (window as any).electronAPI) {
+      // TODO WE NEED TO FEED IN seriesRef
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = await (window as any).electronAPI.readFromPort({
+        path: content.getPortPath(),
+        options: {
+          baudRate: 9600,
+        },
+        index: index,
+      });
+      return result;
+    } else {
+      console.log('Electron API not available in this environment');
+    }
+  };
+
+  const stopReading = async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof window !== 'undefined' && (window as any).electronAPI) {
+      // TODO WE NEED TO FEED IN seriesRef
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = await (window as any).electronAPI.stopReading({
+        path: content.getPortPath(),
+        index: index,
+      });
+      return result;
+    } else {
+      console.log('Electron API not available in this environment');
+    }
+  };
 
   const handleDragStart = (e: React.MouseEvent) => {
     setDragging(true);
@@ -79,7 +109,9 @@ export default function GridSpotContentComponent({
   const handleDragMove = (e: React.MouseEvent) => {
     if (!dragging || !dragStartRef.current) return;
     setTrueX(e.clientX - dragStartRef.current.startX);
+    content.setX(trueX);
     setTrueY(e.clientY - dragStartRef.current.startY);
+    content.setY(trueY);
   };
 
   const handleDragEnd = () => {
@@ -166,7 +198,12 @@ export default function GridSpotContentComponent({
         </button>
         <button
           onClick={() => {
-            // TODO HERE WE CAN DO SOME STUFF
+            if (running) {
+              stopReading();
+            } else {
+              readData();
+            }
+            setRunning(!running);
           }}
           className={`w-12 transform rounded-md ${
             !running ? 'bg-green-500' : 'bg-red-500'
