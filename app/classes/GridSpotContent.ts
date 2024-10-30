@@ -1,6 +1,7 @@
 import { ECBasicOption } from 'echarts/types/dist/shared';
 
 export default class GridSpotContent {
+  private name: string;
   private content: ECBasicOption;
   private x: number;
   private y: number;
@@ -8,20 +9,30 @@ export default class GridSpotContent {
   private height: number;
   private port: string;
 
+  private id: string;
+
   constructor(
+    name: string,
     content: ECBasicOption,
     x: number,
     y: number,
     width: number,
     height: number,
-    port: string
+    port: string,
+    id: string
   ) {
+    this.name = name;
     this.content = content;
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
     this.port = port;
+    this.id = id;
+  }
+
+  getName(): string {
+    return this.name;
   }
 
   getOptions(): ECBasicOption {
@@ -61,6 +72,14 @@ export default class GridSpotContent {
   getManufacturer(): string {
     const x = this.port.split(',')[2];
     return x.substring(x.indexOf(':') + 1).trim();
+  }
+
+  getId(): string {
+    return this.id;
+  }
+
+  setName(name: string): void {
+    this.name = name;
   }
 
   setOptions(content: ECBasicOption): void {

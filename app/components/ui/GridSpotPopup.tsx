@@ -5,11 +5,12 @@ import React, { useEffect, useState } from 'react';
 
 interface InfoPopupProps {
   onClose: () => void;
-  onConfirm: (content: ECBasicOption, port: string) => void;
+  onConfirm: (content: ECBasicOption, port: string, name: string) => void;
 }
 
 const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
   // Form state to manage user input
+  const [name, setName] = useState<string>('New Chart');
   const [ports, setPorts] = useState<string[]>([]);
   const [selectedPort, setSelectedPort] = useState<string | null>(null);
   const [xAxisType, setXAxisType] = useState<DataOption>('category');
@@ -44,7 +45,8 @@ const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
           },
         ],
       },
-      selectedPort!
+      selectedPort!,
+      name
     );
   };
 
@@ -79,6 +81,17 @@ const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
           >
             ✖
           </button>
+        </div>
+
+        <div>
+          <label className='block text-left text-lg font-medium'>Name</label>
+          <input
+            type='text'
+            className='w-full rounded border border-gray-300 p-2'
+            value={name}
+            maxLength={25}
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
 
         <div>

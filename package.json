@@ -22,7 +22,8 @@
     "react-dom": "^18",
     "react-switch": "^7.0.0",
     "serialport": "^12.0.0",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "uuid": "^11.0.2"
   },
   "devDependencies": {
     "@types/node": "^20",

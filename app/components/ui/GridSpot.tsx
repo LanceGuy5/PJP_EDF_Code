@@ -3,10 +3,10 @@ import GridSpotContentComponent from './GridSpotContentComponent';
 import { useState } from 'react';
 
 interface GridSpotProps {
-  index: number;
+  index: string;
   content: GridSpotContent;
   editMode: boolean;
-  onDelete: (x: number) => void;
+  onDelete: (x: string) => void;
 }
 
 export default function GridSpot({
@@ -15,7 +15,6 @@ export default function GridSpot({
   editMode,
   onDelete,
 }: GridSpotProps) {
-  // TODO setXXX functions are for moving/resizing
   const [trueWidth, setTrueWidth] = useState(content.getWidth());
   const [trueHeight, setTrueHeight] = useState(content.getHeight());
   const [trueX, setTrueX] = useState(content.getX());
@@ -36,7 +35,7 @@ export default function GridSpot({
         <div className='grid-spot'>
           <GridSpotContentComponent
             index={index}
-            name={'TESTING'}
+            name={content.getName()}
             editMode={editMode}
             content={content}
             onDelete={onDelete}

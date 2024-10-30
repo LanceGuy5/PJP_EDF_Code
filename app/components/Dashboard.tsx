@@ -9,6 +9,8 @@ import GridSpotPopup from './ui/GridSpotPopup';
 import { ECBasicOption } from 'echarts/types/dist/shared';
 import { ERROR, LOG } from '../helpers/util';
 
+import { v4 as uuid } from 'uuid';
+
 // TESTING FUNCTIONS FOR API ROUTES:
 
 const listPorts = async () => {
@@ -109,30 +111,29 @@ export default function DashboardRenderer({
   const [isEditing, setIsEditing] = useState(false);
   const [dashboardName, setDashboardName] = useState(dashboard.getName());
 
-  function addGrid(options: ECBasicOption, port: string) {
+  function addGrid(options: ECBasicOption, port: string, name: string) {
+    const tempId = uuid();
+    console.log('ADDING', tempId);
     setGrids((currData) => [
       ...currData,
       new GridSpotContent(
+        name,
         options,
         window.innerWidth / 2 + 20 * numBoxes - 200,
         window.innerHeight / 2 + 20 * numBoxes - 200,
         400,
         400,
-        port
+        port,
+        tempId
       ),
     ]);
     setNumBoxes((currVal) => (currVal += 1));
-    LOG('BOXES: ' + numBoxes);
   }
 
-  function removeGrid(index: number) {
-    setGrids((currData) => {
-      const newData = [...currData];
-      newData.splice(index, 1);
-      return newData;
-    });
+  function removeGrid(uuid: string) {
+    console.log('REMOVING', uuid);
+    setGrids((currData) => currData.filter((x) => x.getId() !== uuid));
     setNumBoxes((currVal) => (currVal -= 1));
-    LOG('BOXES: ' + numBoxes);
   }
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -248,28 +249,35 @@ export default function DashboardRenderer({
               if (running) stopAll();
               else runAll();
             }}
-            className={`w-12 transform rounded-md ${!running ? 'bg-green-500' : 'bg-red-500'} px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105`}
+            disabled={editState}
+            className={`w-12 transform rounded-md ${editState ? 'cursor-not-allowed bg-green-300' : !running ? 'bg-green-500 hover:scale-105' : 'bg-red-500 hover:scale-105'} px-4 py-2 text-white transition-all duration-300 ease-in-out`}
           >
             <div style={{ userSelect: 'none' }}>{!running ? '▶' : '⏹'}</div>
           </button>
           <button
             onClick={() => setAdding(true)}
-            className='w-32 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
+            disabled={editState}
+            className={`w-32 transform rounded-md ${editState ? 'cursor-not-allowed bg-blue-300 text-gray-500' : 'bg-blue-500 hover:scale-105 hover:bg-blue-600'} px-4 py-2 text-white transition-all duration-300 ease-in-out`}
           >
             <div style={{ userSelect: 'none' }}>Add Content</div>
           </button>
           {adding && (
             <GridSpotPopup
               onClose={() => setAdding(false)}
-              onConfirm={(content: ECBasicOption, port: string) => {
-                addGrid(content, port);
+              onConfirm={(
+                content: ECBasicOption,
+                port: string,
+                name: string
+              ) => {
+                addGrid(content, port, name);
                 setAdding(false);
               }}
             />
           )}
           <button
             onClick={() => setEditState(!editState)}
-            className='w-20 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
+            disabled={running}
+            className={`w-20 transform rounded-md ${running ? 'cursor-not-allowed bg-blue-300 text-gray-500' : 'bg-blue-500 hover:scale-105 hover:bg-blue-600'} px-4 py-2 text-white transition-all duration-300 ease-in-out`}
           >
             <div className={editState ? 'font-bold' : ''}>
               <div style={{ userSelect: 'none' }}>
@@ -279,32 +287,35 @@ export default function DashboardRenderer({
           </button>
           <button
             onClick={saveDashboard}
-            className='transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
+            disabled={editState}
+            className={`transform rounded-md ${editState ? 'cursor-not-allowed bg-blue-300 text-gray-500' : 'bg-blue-500 hover:scale-105 hover:bg-blue-600'} px-4 py-2 text-white transition-all duration-300 ease-in-out`}
           >
             <div style={{ userSelect: 'none' }}>Save</div>
           </button>
           <button
             onClick={exportDashboard}
-            className='transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
+            disabled={editState}
+            className={`transform rounded-md ${editState ? 'cursor-not-allowed bg-blue-300 text-gray-500' : 'bg-blue-500 hover:scale-105 hover:bg-blue-600'} px-4 py-2 text-white transition-all duration-300 ease-in-out`}
           >
             <div style={{ userSelect: 'none' }}>Export</div>
           </button>
           <button
             onClick={loadDashboard}
-            className='transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
+            disabled={editState}
+            className={`transform rounded-md ${editState ? 'cursor-not-allowed bg-blue-300 text-gray-500' : 'bg-blue-500 hover:scale-105 hover:bg-blue-600'} px-4 py-2 text-white transition-all duration-300 ease-in-out`}
           >
             <div style={{ userSelect: 'none' }}>Load</div>
           </button>
         </div>
       </header>
 
-      {grids.map((x: GridSpotContent, index: number) => (
+      {grids.map((x: GridSpotContent) => (
         <GridSpot
-          key={index}
-          index={index}
+          key={x.getId()}
+          index={x.getId()}
           content={x}
           editMode={editState}
-          onDelete={() => removeGrid(index)}
+          onDelete={() => removeGrid(x.getId())}
         />
       ))}
     </div>

@@ -68,16 +68,16 @@ app.on('ready', () => {
   });
   ipcMain.handle('readFromPort', async (event, path, options, index) => {
     if (serialPorts[path] && serialPorts[path].includes(index)) {
-      return pathToObjectMap[path];
+      return;
     }
     if (serialPorts[path]) {
-      serialPorts[path].append(index);
+      console.log(serialPorts + '   ' + serialPorts[path]);
+      serialPorts[path].push(index);
     } else {
       const serialPort = readFromPort(path, options);
       serialPorts[path] = [index];
       pathToObjectMap[path] = serialPort;
     }
-    return pathToObjectMap[path];
   });
   ipcMain.handle('stopReading', async (event, path, index) => {
     if (serialPorts[path] && serialPorts[path].includes(index)) {

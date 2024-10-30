@@ -67,7 +67,6 @@ function readFromPort(path, options) {
           parsedData.forEach((sensorValue, index) => {
             const type = sensorTypes[index];
             const value = sensorValue.trim();
-
             if (type && value !== '') {
               console.log(`${type}: ${value}`);
             } else {

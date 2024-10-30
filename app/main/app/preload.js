@@ -21,13 +21,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     console.log(
       `[PRELOAD]: readPort called with port ${params.path} and params ${JSON.stringify(params.options)}`
     );
-    const serialPort = await ipcRenderer.invoke(
+    await ipcRenderer.invoke(
       'readFromPort',
       params.path,
       params.options,
       params.index
     );
-    return serialPort;
   },
   stopReading: async (params) => {
     console.log('[PRELOAD]: stopReading called');

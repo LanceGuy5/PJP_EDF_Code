@@ -4,18 +4,18 @@ import * as echarts from 'echarts';
 import GridSpotContent from '@/app/classes/GridSpotContent';
 
 interface GridSpotContentProps {
-  index: number;
+  index: string;
   name: string;
   editMode: boolean;
   content: GridSpotContent;
-  onDelete: (x: number) => void;
+  onDelete: (x: string) => void;
   onMoveX: (x: number) => void;
   onMoveY: (y: number) => void;
   onMoveW: (w: number) => void;
   onMoveH: (h: number) => void;
 }
 
-const OFFSET_CONST = 50; // TODO FINISH THIS SHIT
+const OFFSET_CONST = 72; // TODO SHOULDN'T BE HARDCODED
 
 /**
  * Act as wrapper for grid content!
@@ -38,7 +38,6 @@ export default function GridSpotContentComponent({
   // TODO for rendering on graph
   // const seriesRef = useRef<{ x: number; y: number }[]>([]); // Ref for persistent series data
 
-  // TODO setXXX functions are for moving/resizing
   const [trueWidth, setTrueWidth] = useState(content.getWidth());
   const [trueHeight, setTrueHeight] = useState(content.getHeight());
   const [trueX, setTrueX] = useState(content.getX());
@@ -93,7 +92,7 @@ export default function GridSpotContentComponent({
     const container = document.getElementById(
       `chartContainer-${index}`
     ) as HTMLDivElement;
-    chartRef.current = echarts.init(container); // TODO Explore resizing here
+    chartRef.current = echarts.init(container);
 
     // Set initial chart options
     chartRef.current.setOption(content.getOptions());
@@ -111,14 +110,13 @@ export default function GridSpotContentComponent({
     if (typeof window !== 'undefined' && (window as any).electronAPI) {
       // TODO WE NEED TO FEED IN seriesRef
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await (window as any).electronAPI.readFromPort({
+      await (window as any).electronAPI.readFromPort({
         path: content.getPortPath(),
         options: {
           baudRate: 9600,
         },
         index: index,
       });
-      return result;
     } else {
       console.log('Electron API not available in this environment');
     }
@@ -225,7 +223,10 @@ export default function GridSpotContentComponent({
         onMouseDown={editMode ? handleDragStart : () => {}}
         style={{ cursor: editMode ? 'move' : 'auto' }}
       >
-        <p className='text-black' style={{ userSelect: 'none' }}>
+        <p
+          className='ml-4 text-xl font-bold text-black'
+          style={{ userSelect: 'none' }}
+        >
           {name}
         </p>
         {editMode && (
