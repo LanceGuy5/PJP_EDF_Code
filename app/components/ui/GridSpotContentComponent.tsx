@@ -214,7 +214,7 @@ export default function GridSpotContentComponent({
       className={
         !editMode
           ? 'grid-spot-content'
-          : `grid-spot-content-edit cursor-${dragging ? 'grabbing' : 'grab'}`
+          : `grid-spot-content-edit cursor-${dragging ? 'grabbing' : 'grab'}` // TODO why this not working
       }
       onMouseMove={editMode ? handleDragMove : () => {}}
       onMouseUp={editMode ? handleDragEnd : () => {}}
