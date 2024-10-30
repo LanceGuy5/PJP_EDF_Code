@@ -30,7 +30,7 @@ export default function GridSpot({
           width: `${trueWidth}px`,
           height: `${trueHeight}px`,
           zIndex: 1, // Ensure it's on top, you can adjust the value as needed
-          transform: `translate(-50%, -50%)`, // Center the component around the (x, y) point
+          // transform: `translate(-50%, -50%)`, // Center the component around the (x, y) point
         }}
       >
         <div className='grid-spot'>
@@ -42,6 +42,8 @@ export default function GridSpot({
             onDelete={onDelete}
             onMoveX={setTrueX}
             onMoveY={setTrueY}
+            onMoveW={setTrueWidth}
+            onMoveH={setTrueHeight}
           />
         </div>
       </div>

@@ -103,7 +103,7 @@ export default function DashboardRenderer({
   const [running, setRunning] = useState(false); // this runs ALL GRID SPOTS
   const [editState, setEditState] = useState(false); // this is for editing the dashboard
   const [adding, setAdding] = useState(false); // this is for adding a grid spot
-  const [isTesting, setIsTesting] = useState(false); // this is for testing the dashboard
+  const isTesting = false; // this is for testing the dashboard
 
   // editing dashboard name
   const [isEditing, setIsEditing] = useState(false);
@@ -114,8 +114,8 @@ export default function DashboardRenderer({
       ...currData,
       new GridSpotContent(
         options,
-        window.innerWidth / 2 + 20 * numBoxes,
-        window.innerHeight / 2 + 20 * numBoxes,
+        window.innerWidth / 2 + 20 * numBoxes - 200,
+        window.innerHeight / 2 + 20 * numBoxes - 200,
         400,
         400,
         port
@@ -250,7 +250,7 @@ export default function DashboardRenderer({
             }}
             className={`w-12 transform rounded-md ${!running ? 'bg-green-500' : 'bg-red-500'} px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105`}
           >
-            {!running ? '▶' : '⏹'}
+            <div style={{ userSelect: 'none' }}>{!running ? '▶' : '⏹'}</div>
           </button>
           <button
             onClick={() => setAdding(true)}
