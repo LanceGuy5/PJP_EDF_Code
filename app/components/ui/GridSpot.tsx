@@ -24,7 +24,7 @@ export default function GridSpot({
     <>
       <div
         style={{
-          position: 'relative',
+          position: 'absolute',
           left: `${trueX}px`,
           top: `${trueY}px`,
           width: `${trueWidth}px`,
@@ -40,6 +40,8 @@ export default function GridSpot({
             editMode={editMode}
             content={content}
             onDelete={onDelete}
+            onMoveX={setTrueX}
+            onMoveY={setTrueY}
           />
         </div>
       </div>

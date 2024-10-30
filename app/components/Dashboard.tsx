@@ -179,19 +179,19 @@ export default function DashboardRenderer({
           onClick={() => listPorts()}
           className='w-32 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
         >
-          LIST PORTS
+          <div style={{ userSelect: 'none' }}>LIST PORTS</div>
         </button>
         <button
           onClick={() => readFromPort()}
           className='w-32 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
         >
-          READ FROM PORT
+          <div style={{ userSelect: 'none' }}>READ FROM PORT</div>
         </button>
         <button
           onClick={() => stopAllReadings()}
           className='w-32 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
         >
-          STOPPING READINGS
+          <div style={{ userSelect: 'none' }}>STOP READING</div>
         </button>
       </div>
     </>
@@ -256,7 +256,7 @@ export default function DashboardRenderer({
             onClick={() => setAdding(true)}
             className='w-32 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
           >
-            Add Content
+            <div style={{ userSelect: 'none' }}>Add Content</div>
           </button>
           {adding && (
             <GridSpotPopup
@@ -272,31 +272,33 @@ export default function DashboardRenderer({
             className='w-20 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
           >
             <div className={editState ? 'font-bold' : ''}>
-              {editState ? 'Done' : 'Edit'}
+              <div style={{ userSelect: 'none' }}>
+                {editState ? 'Done' : 'Edit'}
+              </div>
             </div>
           </button>
           <button
             onClick={saveDashboard}
             className='transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
           >
-            Save
+            <div style={{ userSelect: 'none' }}>Save</div>
           </button>
           <button
             onClick={exportDashboard}
             className='transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
           >
-            Export
+            <div style={{ userSelect: 'none' }}>Export</div>
           </button>
           <button
             onClick={loadDashboard}
             className='transform rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-600'
           >
-            Load
+            <div style={{ userSelect: 'none' }}>Load</div>
           </button>
         </div>
       </header>
 
-      {grids.map((x: GridSpotContent, index) => (
+      {grids.map((x: GridSpotContent, index: number) => (
         <GridSpot
           key={index}
           index={index}

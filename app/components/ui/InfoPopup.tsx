@@ -1,10 +1,6 @@
 import Dashboard from '@/app/classes/Dashboard';
 import React, { useState } from 'react';
 
-// TODO figure out a way to make this better
-const rows = 6; // Number of rows
-const cols = 11; // Number of columns
-
 interface InfoPopupProps {
   onClose: () => void;
   setDashboard: (d: Dashboard | null) => void;
@@ -15,14 +11,7 @@ const createDashboard = (
   name: string,
   onClose: () => void
 ) => {
-  setDashboard(
-    new Dashboard(
-      name,
-      Array(rows)
-        .fill(null)
-        .map(() => Array(cols).fill(null))
-    )
-  );
+  setDashboard(new Dashboard(name));
   onClose();
 };
 

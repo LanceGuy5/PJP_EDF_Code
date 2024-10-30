@@ -9,7 +9,11 @@ interface GridSpotContentProps {
   editMode: boolean;
   content: GridSpotContent;
   onDelete: (x: number) => void;
+  onMoveX: (x: number) => void;
+  onMoveY: (y: number) => void;
 }
+
+const OFFSET_CONST = 50; // TODO FINISH THIS SHIT
 
 /**
  * Act as wrapper for grid content!
@@ -20,6 +24,8 @@ export default function GridSpotContentComponent({
   editMode,
   content,
   onDelete,
+  onMoveX,
+  onMoveY,
 }: GridSpotContentProps) {
   const [running, setRunning] = useState(false);
   const [retracted, setRetracted] = useState(false);
@@ -33,14 +39,33 @@ export default function GridSpotContentComponent({
   const [trueX, setTrueX] = useState(content.getX());
   const [trueY, setTrueY] = useState(content.getY());
 
-  // for moving grid objects
+  function updateX(x: number) {
+    setTrueX(x);
+    content.setX(x);
+    onMoveX(x);
+  }
+
+  function updateY(y: number) {
+    y = Math.max(y, OFFSET_CONST + trueHeight / 2);
+    setTrueY(y);
+    content.setY(y);
+    onMoveY(y);
+  }
+
+  // for moving/resizing grid objects
   const [dragging, setDragging] = useState(false);
-  // const [resizing, setResizing] = useState(false);
+  const [resizing, setResizing] = useState(false);
   const dragStartRef = useRef<{ startX: number; startY: number } | null>({
     startX: trueX,
     startY: trueY,
   });
-  // const resizeStartRef = useRef<{ startWidth: number; startHeight: number } | null>(null);
+  const resizeStartRef = useRef<{
+    startWidth: number;
+    startHeight: number;
+  } | null>({
+    startWidth: trueWidth,
+    startHeight: trueHeight,
+  });
 
   useEffect(() => {
     // Clean up existing chart instance if it exists
@@ -63,7 +88,7 @@ export default function GridSpotContentComponent({
         chartRef.current.dispose();
       }
     };
-  }, [content, index]); // Dependency array to control when useEffect re-runs
+  }, [content, index]);
 
   const readData = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -100,6 +125,7 @@ export default function GridSpotContentComponent({
 
   const handleDragStart = (e: React.MouseEvent) => {
     setDragging(true);
+    // do not let y go past the header:
     dragStartRef.current = {
       startX: e.clientX - trueX,
       startY: e.clientY - trueY,
@@ -108,35 +134,37 @@ export default function GridSpotContentComponent({
 
   const handleDragMove = (e: React.MouseEvent) => {
     if (!dragging || !dragStartRef.current) return;
-    setTrueX(e.clientX - dragStartRef.current.startX);
-    content.setX(trueX);
-    setTrueY(e.clientY - dragStartRef.current.startY);
-    content.setY(trueY);
+    updateX(e.clientX - dragStartRef.current.startX);
+    updateY(e.clientY - dragStartRef.current.startY);
   };
 
   const handleDragEnd = () => {
     setDragging(false);
   };
 
-  // const handleResizeStart = (e: React.MouseEvent) => {
-  //   setResizing(true);
-  //   resizeStartRef.current = { startWidth: trueWidth, startHeight: trueHeight };
-  // };
+  const handleResizeStart = (e: React.MouseEvent) => {
+    setResizing(true);
+    resizeStartRef.current = { startWidth: trueWidth, startHeight: trueHeight };
+  };
 
-  // const handleResizeMove = (e: React.MouseEvent) => {
-  //   if (!resizing || !resizeStartRef.current) return;
-  //   setTrueWidth(resizeStartRef.current.startWidth + (e.clientX - trueX - trueWidth));
-  //   setTrueHeight(resizeStartRef.current.startHeight + (e.clientY - trueY - trueHeight));
-  // };
+  const handleResizeMove = (e: React.MouseEvent) => {
+    if (!resizing || !resizeStartRef.current) return;
+    setTrueWidth(
+      resizeStartRef.current.startWidth + (e.clientX - trueX - trueWidth)
+    );
+    setTrueHeight(
+      resizeStartRef.current.startHeight + (e.clientY - trueY - trueHeight)
+    );
+  };
 
-  // const handleResizeEnd = () => setResizing(false);
+  const handleResizeEnd = () => setResizing(false);
 
   return (
     <div
       style={{
-        position: 'absolute',
-        left: `${trueX}px`,
-        top: `${trueY}px`,
+        position: 'relative',
+        left: '0px', //`${trueX}px`,
+        top: '0px', //`${trueY}px`,
         width: `${trueWidth}px`,
         height: `${trueHeight}px`,
         zIndex: 1000, // Ensure it's on top, you can adjust the value as needed
