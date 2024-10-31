@@ -36,7 +36,7 @@ export default function GridSpotContentComponent({
 
   const chartRef = useRef<ECharts | null>(null); // Create a ref to hold the chart instance
   // TODO for rendering on graph
-  // const seriesRef = useRef<{ x: number; y: number }[]>([]); // Ref for persistent series data
+  const seriesRef = useRef<{ x: number; y: number }[]>([]); // Ref for persistent series data
 
   const [trueWidth, setTrueWidth] = useState(content.getWidth());
   const [trueHeight, setTrueHeight] = useState(content.getHeight());
@@ -105,26 +105,43 @@ export default function GridSpotContentComponent({
     };
   }, [content, index]);
 
+  function parseTimeStamp(timeStamp: String){
+    const vals = timeStamp.split(':');
+    let secs = parseFloat(vals[2] + '.' + vals[3])
+    if(vals[1] != "00"){
+      secs += (parseFloat(vals[1]) * 60)
+    }
+    return secs
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (window as any).electronAPI.dataUpdate((data: { x: number; y: number }) => {
-    console.log(data);
-    // seriesRef.current.push(data);
-    // updateChartData();
+  (window as any).electronAPI.dataUpdate((data: string) => {
+    const temp:string[] = data.split(",");
+    const obj = {
+      x: parseTimeStamp(temp[0]),
+      y: parseFloat(temp[1])
+    }
+    console.log(obj);
+
+    
+    seriesRef.current.push(obj);
+    updateChartData();
   });
 
-  // const updateChartData = () => {
-  //   if (chartRef.current) {
-  //     chartRef.current.setOption({
-  //       series: [
-  //         {
-  //           name: 'Data Series',
-  //           type: 'line', // Adjust type as needed
-  //           data: seriesRef.current.map((point) => [point.x, point.y]),
-  //         },
-  //       ],
-  //     });
-  //   }
-  // };
+  const updateChartData = () => {
+    if (chartRef.current) {
+      chartRef.current.clear();
+      chartRef.current.setOption({
+        series: [
+          {
+            name: 'Data Series',
+            type: 'line', // Adjust type as needed
+            data: seriesRef.current.map((point) => [point.x, point.y]),
+          },
+        ],
+      });
+    }
+  };
 
   const readData = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
