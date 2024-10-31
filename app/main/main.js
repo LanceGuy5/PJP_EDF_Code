@@ -5,10 +5,11 @@ const { listPorts, readFromPort } = require('../helpers/ports.js');
 let serve;
 const serialPorts = {}; // {path: index[]}
 const pathToObjectMap = {}; // {path: serialPort}
+let win;
 
 const createWindow = async () => {
   console.log(`[APP]: ${path.join(__dirname, '../icon.png')}`);
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     // width: 800,
     // height: 600,
     title: 'Penn Jet Propulsion Metrics Suite',
@@ -74,7 +75,8 @@ app.on('ready', () => {
       console.log(serialPorts + '   ' + serialPorts[path]);
       serialPorts[path].push(index);
     } else {
-      const serialPort = readFromPort(path, options);
+      // TODO readFromPort may or may not dispatch to every graph window...
+      const serialPort = readFromPort(path, options, win);
       serialPorts[path] = [index];
       pathToObjectMap[path] = serialPort;
     }

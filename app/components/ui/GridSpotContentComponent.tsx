@@ -105,6 +105,27 @@ export default function GridSpotContentComponent({
     };
   }, [content, index]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as any).electronAPI.dataUpdate((data: { x: number; y: number }) => {
+    console.log(data);
+    // seriesRef.current.push(data);
+    // updateChartData();
+  });
+
+  // const updateChartData = () => {
+  //   if (chartRef.current) {
+  //     chartRef.current.setOption({
+  //       series: [
+  //         {
+  //           name: 'Data Series',
+  //           type: 'line', // Adjust type as needed
+  //           data: seriesRef.current.map((point) => [point.x, point.y]),
+  //         },
+  //       ],
+  //     });
+  //   }
+  // };
+
   const readData = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (typeof window !== 'undefined' && (window as any).electronAPI) {

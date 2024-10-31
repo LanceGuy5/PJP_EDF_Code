@@ -32,4 +32,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     console.log('[PRELOAD]: stopReading called');
     await ipcRenderer.invoke('stopReading', params.path, params.index);
   },
+  dataUpdate: (callback) => {
+    ipcRenderer.on('dataUpdate', (event, data) => callback(data));
+  },
 });

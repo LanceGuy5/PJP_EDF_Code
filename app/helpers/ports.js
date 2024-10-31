@@ -19,21 +19,12 @@ function listPorts() {
     });
 }
 
-function readFromPort(path, options) {
+function readFromPort(path, options, window) {
   try {
     const serial = new SerialPort({ path, ...options });
 
     // Buffer to accumulate incoming data
     let buffer = '';
-
-    // Define the order of sensor types as per Arduino's data output
-    const sensorTypes = [
-      'timestamp',
-      'temperature',
-      'load',
-      'fuel_flow',
-      'air_velocity',
-    ];
 
     // Event listener for incoming data
     serial.on('data', (data) => {
@@ -58,24 +49,8 @@ function readFromPort(path, options) {
         // Remove the processed data block from buffer
         buffer = buffer.substring(end + 1);
 
-        // Split the data block by commas to get individual sensor values
-        const parsedData = dataBlock.split(',');
-
-        // Check if the number of data points matches the number of sensor types
-        if (parsedData.length === sensorTypes.length) {
-          // Iterate through each sensor value and its corresponding type
-          parsedData.forEach((sensorValue, index) => {
-            const type = sensorTypes[index];
-            const value = sensorValue.trim();
-            if (type && value !== '') {
-              console.log(`${type}: ${value}`);
-            } else {
-              console.warn(`Missing data for sensor type: ${type}`);
-            }
-          });
-        } else {
-          console.warn('Unexpected data format:', dataBlock);
-        }
+        // Emit to renderer
+        window.webContents.send('dataUpdate', dataBlock);
 
         // Update the start position for the next iteration
         start = buffer.indexOf('%');
