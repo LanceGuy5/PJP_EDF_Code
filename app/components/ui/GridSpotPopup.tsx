@@ -218,9 +218,7 @@ const GridSpotPopup: React.FC<InfoPopupProps> = ({
                   <option key={index} value={val}>
                     {val.trim()}
                   </option>
-                ) : (
-                  <></>
-                )
+                ) : null
               )}
             </select>
           </div>

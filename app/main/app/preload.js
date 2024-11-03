@@ -32,8 +32,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     console.log('[PRELOAD]: stopReading called');
     await ipcRenderer.invoke('stopReading', params.path, params.index);
   },
-  dataUpdate: (callback) => {
-    ipcRenderer.on('dataUpdate', (event, data) => callback(data));
+  dataUpdate: (id, callback) => {
+    ipcRenderer.on(`dataUpdate-${id}`, (event, data) => callback(data));
   },
   removeListener: (channel, callback) => {
     ipcRenderer.removeListener(channel, callback);

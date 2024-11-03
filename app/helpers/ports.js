@@ -19,7 +19,7 @@ function listPorts() {
     });
 }
 
-function readFromPort(path, options, window) {
+function readFromPort(path, options, window, ids) {
   try {
     const serial = new SerialPort({ path, ...options });
 
@@ -50,7 +50,9 @@ function readFromPort(path, options, window) {
         buffer = buffer.substring(end + 1);
 
         // Emit to renderer
-        window.webContents.send('dataUpdate', dataBlock);
+        ids.forEach((id) => {
+          window.webContents.send(`dataUpdate-${id}`, dataBlock);
+        });
 
         // Update the start position for the next iteration
         start = buffer.indexOf('%');

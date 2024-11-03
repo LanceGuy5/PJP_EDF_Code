@@ -148,17 +148,17 @@ export default function GridSpotContentComponent({
 
     // Attach the listener
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).electronAPI.dataUpdate(dataUpdateHandler);
+    (window as any).electronAPI.dataUpdate(content.getId(), dataUpdateHandler);
 
     // Cleanup the listener on unmount or rerender
     return () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).electronAPI.removeListener(
-        'dataUpdate',
+        `dataUpdate`, // i don't think we need to pass id here
         dataUpdateHandler
       );
     };
-  }, []); // Empty dependency array to run only on mount and unmount
+  });
 
   const readData = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -326,7 +326,6 @@ export default function GridSpotContentComponent({
             } else {
               seriesRef.current = [];
               xScale.current = [0, 1];
-              // chartRef.current?.clear();
               readData();
             }
             setRunning(!running);

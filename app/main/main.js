@@ -76,8 +76,8 @@ app.on('ready', () => {
       serialPorts[path].push(index);
     } else {
       // TODO readFromPort may or may not dispatch to every graph window...
-      const serialPort = readFromPort(path, options, win);
       serialPorts[path] = [index];
+      const serialPort = readFromPort(path, options, win, serialPorts[path]);
       pathToObjectMap[path] = serialPort;
     }
   });
