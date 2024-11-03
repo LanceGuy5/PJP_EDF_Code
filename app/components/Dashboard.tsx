@@ -10,6 +10,8 @@ import { ECBasicOption } from 'echarts/types/dist/shared';
 import { ERROR, LOG } from '../helpers/util';
 
 import { v4 as uuid } from 'uuid';
+import SettingsPopup from './ui/SettingsPopup';
+import { DashboardSettings } from '../types/ChartOptions';
 
 // TESTING FUNCTIONS FOR API ROUTES:
 
@@ -105,6 +107,10 @@ export default function DashboardRenderer({
   const [running, setRunning] = useState(false); // this runs ALL GRID SPOTS
   const [editState, setEditState] = useState(false); // this is for editing the dashboard
   const [adding, setAdding] = useState(false); // this is for adding a grid spot
+  const [settings, isSettings] = useState(false); // this is for settings
+  const [dashboardSettings, setDashboardSettings] = useState({
+    defaultSchema: [''],
+  });
   const isTesting = false; // this is for testing the dashboard
 
   // editing dashboard name
@@ -272,6 +278,7 @@ export default function DashboardRenderer({
                 addGrid(content, port, name);
                 setAdding(false);
               }}
+              settings={dashboardSettings}
             />
           )}
           <button
@@ -306,6 +313,31 @@ export default function DashboardRenderer({
           >
             <div style={{ userSelect: 'none' }}>Load</div>
           </button>
+          <button
+            onClick={() => isSettings(true)}
+            disabled={editState}
+            className={`transform rounded-md ${editState ? 'cursor-not-allowed bg-blue-300 text-gray-500' : 'bg-blue-500 hover:scale-105 hover:bg-blue-600'} px-4 py-2 text-white transition-all duration-300 ease-in-out`}
+          >
+            <div
+              style={{
+                userSelect: 'none',
+                transform: 'scale(1.5)',
+                display: 'inline-block',
+              }}
+            >
+              ⚙
+            </div>
+          </button>
+          {settings && (
+            <SettingsPopup
+              onClose={() => isSettings(false)}
+              onConfirm={(content: DashboardSettings) => {
+                setDashboardSettings(content);
+                isSettings(false);
+              }}
+              settings={dashboardSettings}
+            />
+          )}
         </div>
       </header>
 

@@ -8,3 +8,7 @@ export type Schema = {
   fuel_flow: number;
   air_velocity: number;
 };
+export type XAxisData = 'time';
+export type DashboardSettings = {
+  defaultSchema: string[];
+};

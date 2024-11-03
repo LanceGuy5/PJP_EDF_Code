@@ -37,6 +37,7 @@ export default function GridSpotContentComponent({
   const chartRef = useRef<ECharts | null>(null); // Create a ref to hold the chart instance
   // TODO for rendering on graph
   const seriesRef = useRef<{ x: number; y: number }[]>([]); // Ref for persistent series data
+  const xScale = useRef([0, 1]);
 
   const [trueWidth, setTrueWidth] = useState(content.getWidth());
   const [trueHeight, setTrueHeight] = useState(content.getHeight());
@@ -96,6 +97,9 @@ export default function GridSpotContentComponent({
 
     // Set initial chart options
     chartRef.current.setOption(content.getOptions());
+    chartRef.current.setOption({
+      series: [{ type: 'line', data: [] }],
+    });
 
     // Cleanup on component unmount
     return () => {
@@ -105,43 +109,56 @@ export default function GridSpotContentComponent({
     };
   }, [content, index]);
 
-  function parseTimeStamp(timeStamp: String){
+  function parseTimeStamp(timeStamp: string) {
     const vals = timeStamp.split(':');
-    let secs = parseFloat(vals[2] + '.' + vals[3])
-    if(vals[1] != "00"){
-      secs += (parseFloat(vals[1]) * 60)
+    let secs = parseFloat(vals[2] + '.' + vals[3]);
+    if (vals[1] != '00') {
+      secs += parseFloat(vals[1]) * 60;
     }
-    return secs
+    return secs;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (window as any).electronAPI.dataUpdate((data: string) => {
-    const temp:string[] = data.split(",");
-    const obj = {
-      x: parseTimeStamp(temp[0]),
-      y: parseFloat(temp[1])
-    }
-    console.log(obj);
+  useEffect(() => {
+    const dataUpdateHandler = (data: string) => {
+      const temp: string[] = data.split(',');
+      const obj = {
+        x: parseTimeStamp(temp[0]),
+        y: parseFloat(temp[1]),
+      };
+      seriesRef.current.push(obj);
 
-    
-    seriesRef.current.push(obj);
-    updateChartData();
-  });
+      if (obj.x > xScale.current[xScale.current.length - 1]) {
+        xScale.current.push(obj.x);
+      }
 
-  const updateChartData = () => {
-    if (chartRef.current) {
-      chartRef.current.clear();
-      chartRef.current.setOption({
+      chartRef.current?.setOption({
+        xAxis: [
+          {
+            type: 'category',
+            data: xScale.current,
+          },
+        ],
         series: [
           {
-            name: 'Data Series',
-            type: 'line', // Adjust type as needed
-            data: seriesRef.current.map((point) => [point.x, point.y]),
+            data: seriesRef.current.map((d) => d.y),
           },
         ],
       });
-    }
-  };
+    };
+
+    // Attach the listener
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).electronAPI.dataUpdate(dataUpdateHandler);
+
+    // Cleanup the listener on unmount or rerender
+    return () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).electronAPI.removeListener(
+        'dataUpdate',
+        dataUpdateHandler
+      );
+    };
+  }, []); // Empty dependency array to run only on mount and unmount
 
   const readData = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -307,6 +324,9 @@ export default function GridSpotContentComponent({
             if (running) {
               stopReading();
             } else {
+              seriesRef.current = [];
+              xScale.current = [0, 1];
+              // chartRef.current?.clear();
               readData();
             }
             setRunning(!running);

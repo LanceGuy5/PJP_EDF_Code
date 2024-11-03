@@ -1,38 +1,60 @@
 import { ERROR, LOG } from '@/app/helpers/util';
-import { ChartType, DataOption } from '@/app/types/ChartOptions';
+import {
+  ChartType,
+  DashboardSettings,
+  DataOption,
+  XAxisData,
+} from '@/app/types/ChartOptions';
 import { ECBasicOption } from 'echarts/types/dist/shared';
 import React, { useEffect, useState } from 'react';
 
 interface InfoPopupProps {
+  settings: DashboardSettings;
   onClose: () => void;
-  onConfirm: (content: ECBasicOption, port: string, name: string) => void;
+  onConfirm: (
+    content: ECBasicOption,
+    port: string,
+    name: string,
+    data: [XAxisData, string]
+  ) => void; // TODO fix string
 }
 
-const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
+const GridSpotPopup: React.FC<InfoPopupProps> = ({
+  settings,
+  onClose,
+  onConfirm,
+}) => {
   // Form state to manage user input
   const [name, setName] = useState<string>('New Chart');
   const [ports, setPorts] = useState<string[]>([]);
   const [selectedPort, setSelectedPort] = useState<string | null>(null);
-  const [xAxisType, setXAxisType] = useState<DataOption>('category');
-  const [xAxisData, setXAxisData] = useState<string>('A,B,C,D,E'); // Comma-separated values
-  const [yAxisType, setYAxisType] = useState<DataOption>('value');
+  const [schema, setSchema] = useState<string>(
+    settings.defaultSchema.join(',')
+  );
+  const [xAxisData, setXAxisData] = useState<XAxisData>('time');
+  const [yAxisData, setYAxisData] = useState<string>('');
   const [seriesType, setSeriesType] = useState<ChartType>('rigid-line');
-  const [seriesData, setSeriesData] = useState<string>('1,2,3,4,5'); // Comma-separated values
 
   const handleSubmit = () => {
     const xAxisArray = xAxisData.split(',').map((item) => item.trim());
-    const seriesArray = seriesData
-      .split(',')
-      .map((item) => Number(item.trim()));
 
     onConfirm(
       {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            label: {
+              backgroundColor: '#283b56',
+            },
+          },
+        },
         xAxis: {
-          type: xAxisType,
+          type: 'category',
           data: xAxisArray,
         },
         yAxis: {
-          type: yAxisType,
+          type: 'value',
         },
         series: [
           {
@@ -40,13 +62,14 @@ const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
               seriesType == 'rigid-line' || seriesType == 'smooth-line'
                 ? 'line'
                 : 'bar',
-            data: seriesArray,
+            data: [],
             smooth: seriesType == 'smooth-line',
           },
         ],
       },
       selectedPort!,
-      name
+      name,
+      [xAxisData, yAxisData]
     );
   };
 
@@ -94,25 +117,65 @@ const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
           />
         </div>
 
-        <div>
-          <label className='block text-left text-lg font-medium'>Port</label>
-          <select
-            className='w-full rounded border border-gray-300 p-2'
-            value={selectedPort || ''}
-            onChange={(e) => setSelectedPort(e.target.value as string)}
-          >
-            <option value='' disabled>
-              Select port...
-            </option>
-            {ports.map((port, index) => (
-              <option key={index} value={port}>
-                {port}
-              </option>
-            ))}
-          </select>
-        </div>
-
         <form className='mt-4 space-y-4'>
+          <div>
+            <label className='block text-left text-lg font-medium'>Port</label>
+            <div className='flex flex-row'>
+              <select
+                className='w-full rounded border border-gray-300 p-2'
+                value={selectedPort || ''}
+                onChange={(e) => setSelectedPort(e.target.value as string)}
+              >
+                <option value='' disabled>
+                  Select port...
+                </option>
+                {ports.map((port, index) => (
+                  <option key={index} value={port}>
+                    {port}
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={async () => {
+                  try {
+                    if (
+                      typeof window !== 'undefined' &&
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      (window as any).electronAPI
+                    ) {
+                      const result: string =
+                        await // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        (window as any).electronAPI.listPorts();
+                      const ret = result
+                        .substring(0, result.length - 1)
+                        .split('&');
+                      setPorts(ret); // Set the ports array in state
+                    } else {
+                      LOG('Electron API not available in this environment');
+                    }
+                  } catch (error) {
+                    ERROR(`Error getting ports: ${error}`);
+                  }
+                }}
+                className='ml-2 rounded px-4 py-2 font-bold text-black duration-150 hover:bg-gray-200'
+              >
+                ⟳
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className='block text-left text-lg font-medium'>
+              Schema
+            </label>
+            <input
+              type='text'
+              className='w-full rounded border border-gray-300 p-2'
+              value={schema}
+              onChange={(e) => setSchema(e.target.value)}
+            />
+          </div>
+
           <div>
             <label className='block text-left text-lg font-medium'>
               Series Type
@@ -130,54 +193,36 @@ const GridSpotPopup: React.FC<InfoPopupProps> = ({ onClose, onConfirm }) => {
 
           <div>
             <label className='block text-left text-lg font-medium'>
-              X-Axis Type
+              X-Axis Data
             </label>
             <select
-              className='w-full rounded border border-gray-300 p-2'
-              value={xAxisType}
-              onChange={(e) => setXAxisType(e.target.value as DataOption)}
-            >
-              <option value='category'>Category</option>
-              <option value='value'>Value</option>
-            </select>
-          </div>
-
-          <div>
-            <label className='block text-left text-lg font-medium'>
-              X-Axis Data (comma-separated)
-            </label>
-            <input
-              type='text'
               className='w-full rounded border border-gray-300 p-2'
               value={xAxisData}
-              onChange={(e) => setXAxisData(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label className='block text-left text-lg font-medium'>
-              Y-Axis Type
-            </label>
-            <select
-              className='w-full rounded border border-gray-300 p-2'
-              value={yAxisType}
-              onChange={(e) => setYAxisType(e.target.value as DataOption)}
+              onChange={(e) => setXAxisData(e.target.value as XAxisData)}
             >
-              <option value='value'>Value</option>
-              <option value='category'>Category</option>
+              <option value='time'>Time</option>
             </select>
           </div>
 
           <div>
             <label className='block text-left text-lg font-medium'>
-              Series Data (comma-separated)
+              Y-Axis Data
             </label>
-            <input
-              type='text'
+            <select
               className='w-full rounded border border-gray-300 p-2'
-              value={seriesData}
-              onChange={(e) => setSeriesData(e.target.value)}
-            />
+              value={yAxisData}
+              onChange={(e) => setYAxisData(e.target.value as DataOption)}
+            >
+              {schema.split(',').map((val, index) =>
+                val.trim() != '' ? (
+                  <option key={index} value={val}>
+                    {val.trim()}
+                  </option>
+                ) : (
+                  <></>
+                )
+              )}
+            </select>
           </div>
 
           <div className='flex justify-end'>

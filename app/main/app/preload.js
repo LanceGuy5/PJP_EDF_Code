@@ -35,4 +35,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   dataUpdate: (callback) => {
     ipcRenderer.on('dataUpdate', (event, data) => callback(data));
   },
+  removeListener: (channel, callback) => {
+    ipcRenderer.removeListener(channel, callback);
+  },
 });
