@@ -75,8 +75,8 @@ app.on('ready', () => {
       console.log(serialPorts + '   ' + serialPorts[path]);
       serialPorts[path].push(index);
     } else {
-      // TODO readFromPort may or may not dispatch to every graph window...
       serialPorts[path] = [index];
+      // serialPorts[path] passed as reference
       const serialPort = readFromPort(path, options, win, serialPorts[path]);
       pathToObjectMap[path] = serialPort;
     }

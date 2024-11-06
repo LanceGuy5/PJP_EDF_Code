@@ -148,22 +148,24 @@ export default function GridSpotContentComponent({
 
     // Attach the listener
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).electronAPI.dataUpdate(content.getId(), dataUpdateHandler);
+    (window as any).electronAPI.dataUpdate({
+      id: content.getId(),
+      callback: dataUpdateHandler,
+    });
 
     // Cleanup the listener on unmount or rerender
     return () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).electronAPI.removeListener(
-        `dataUpdate`, // i don't think we need to pass id here
-        dataUpdateHandler
-      );
+      (window as any).electronAPI.removeListener({
+        channel: `dataUpdate-${content.getId()}`,
+        callback: dataUpdateHandler,
+      });
     };
-  });
+  }, []); // do NOT mess with this dependency array
 
   const readData = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (typeof window !== 'undefined' && (window as any).electronAPI) {
-      // TODO WE NEED TO FEED IN seriesRef
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (window as any).electronAPI.readFromPort({
         path: content.getPortPath(),
@@ -180,7 +182,6 @@ export default function GridSpotContentComponent({
   const stopReading = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (typeof window !== 'undefined' && (window as any).electronAPI) {
-      // TODO WE NEED TO FEED IN seriesRef
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await (window as any).electronAPI.stopReading({
         path: content.getPortPath(),
@@ -244,9 +245,6 @@ export default function GridSpotContentComponent({
       updateWidth(newWidth);
       updateHeight(newHeight);
     }
-
-    // updateWidth(newWidth);
-    // updateHeight(newHeight);
   };
 
   const handleResizeEnd = () => setResizing(false);
@@ -291,6 +289,7 @@ export default function GridSpotContentComponent({
                 chartRef.current.clear();
                 chartRef.current.dispose();
               }
+              stopReading();
               onDelete(index);
             }}
             style={{

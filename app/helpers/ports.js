@@ -60,7 +60,7 @@ function readFromPort(path, options, window, ids) {
     });
 
     // Handle serial port errors
-    // TODO We need this to be more functional
+    // TODO Do error listening on a per-relier basis???
     serial.on('error', (err) => {
       console.error('Error on serial port:', err.message);
     });

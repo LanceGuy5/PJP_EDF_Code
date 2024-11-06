@@ -29,13 +29,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
     );
   },
   stopReading: async (params) => {
-    console.log('[PRELOAD]: stopReading called');
     await ipcRenderer.invoke('stopReading', params.path, params.index);
   },
-  dataUpdate: (id, callback) => {
-    ipcRenderer.on(`dataUpdate-${id}`, (event, data) => callback(data));
+  dataUpdate: (params) => {
+    console.log('[PRELOAD]: stopReading called on id', params.id);
+    ipcRenderer.on(`dataUpdate-${params.id}`, (event, data) =>
+      params.callback(data)
+    );
   },
-  removeListener: (channel, callback) => {
-    ipcRenderer.removeListener(channel, callback);
+  removeListener: (params) => {
+    console.log('[PRELOAD]: removeListener called on channel', params.channel);
+    ipcRenderer.removeListener(params.channel, params.callback);
   },
 });
