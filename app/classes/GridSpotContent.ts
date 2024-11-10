@@ -1,4 +1,5 @@
 import { ECBasicOption } from 'echarts/types/dist/shared';
+import { XAxisData } from '../types/ChartOptions';
 
 export default class GridSpotContent {
   private name: string;
@@ -8,8 +9,8 @@ export default class GridSpotContent {
   private width: number;
   private height: number;
   private port: string;
-
   private id: string;
+  private data: [XAxisData, number];
 
   constructor(
     name: string,
@@ -19,7 +20,8 @@ export default class GridSpotContent {
     width: number,
     height: number,
     port: string,
-    id: string
+    id: string,
+    data: [XAxisData, number]
   ) {
     this.name = name;
     this.content = content;
@@ -29,6 +31,7 @@ export default class GridSpotContent {
     this.height = height;
     this.port = port;
     this.id = id;
+    this.data = data;
   }
 
   getName(): string {
@@ -76,6 +79,10 @@ export default class GridSpotContent {
 
   getId(): string {
     return this.id;
+  }
+
+  getData(): [XAxisData, number] {
+    return this.data;
   }
 
   setName(name: string): void {

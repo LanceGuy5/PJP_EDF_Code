@@ -11,7 +11,7 @@ import { ERROR, LOG } from '../helpers/util';
 
 import { v4 as uuid } from 'uuid';
 import SettingsPopup from './ui/SettingsPopup';
-import { DashboardSettings } from '../types/ChartOptions';
+import { DashboardSettings, XAxisData } from '../types/ChartOptions';
 
 // TESTING FUNCTIONS FOR API ROUTES:
 
@@ -117,7 +117,12 @@ export default function DashboardRenderer({
   const [isEditing, setIsEditing] = useState(false);
   const [dashboardName, setDashboardName] = useState(dashboard.getName());
 
-  function addGrid(options: ECBasicOption, port: string, name: string) {
+  function addGrid(
+    options: ECBasicOption,
+    port: string,
+    name: string,
+    data: [XAxisData, number]
+  ) {
     const tempId = uuid();
     console.log('ADDING', tempId);
     setGrids((currData) => [
@@ -130,7 +135,8 @@ export default function DashboardRenderer({
         400,
         400,
         port,
-        tempId
+        tempId,
+        data
       ),
     ]);
     setNumBoxes((currVal) => (currVal += 1));
@@ -273,9 +279,10 @@ export default function DashboardRenderer({
               onConfirm={(
                 content: ECBasicOption,
                 port: string,
-                name: string
+                name: string,
+                data: [XAxisData, number]
               ) => {
-                addGrid(content, port, name);
+                addGrid(content, port, name, data);
                 setAdding(false);
               }}
               settings={dashboardSettings}

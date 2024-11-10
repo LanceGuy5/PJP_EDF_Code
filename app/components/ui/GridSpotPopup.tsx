@@ -2,7 +2,6 @@ import { ERROR, LOG } from '@/app/helpers/util';
 import {
   ChartType,
   DashboardSettings,
-  DataOption,
   XAxisData,
 } from '@/app/types/ChartOptions';
 import { ECBasicOption } from 'echarts/types/dist/shared';
@@ -15,7 +14,7 @@ interface InfoPopupProps {
     content: ECBasicOption,
     port: string,
     name: string,
-    data: [XAxisData, string]
+    data: [XAxisData, number]
   ) => void; // TODO fix string
 }
 
@@ -32,7 +31,7 @@ const GridSpotPopup: React.FC<InfoPopupProps> = ({
     settings.defaultSchema.join(',')
   );
   const [xAxisData, setXAxisData] = useState<XAxisData>('time');
-  const [yAxisData, setYAxisData] = useState<string>('');
+  const [yAxisData, setYAxisData] = useState<number>(0);
   const [seriesType, setSeriesType] = useState<ChartType>('rigid-line');
 
   const handleSubmit = () => {
@@ -210,8 +209,8 @@ const GridSpotPopup: React.FC<InfoPopupProps> = ({
             </label>
             <select
               className='w-full rounded border border-gray-300 p-2'
-              value={yAxisData}
-              onChange={(e) => setYAxisData(e.target.value as DataOption)}
+              value={schema.split(',')[yAxisData]}
+              onChange={(e) => setYAxisData(e.target.selectedIndex)}
             >
               {schema.split(',').map((val, index) =>
                 val.trim() != '' ? (

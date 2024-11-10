@@ -123,7 +123,7 @@ export default function GridSpotContentComponent({
       const temp: string[] = data.split(',');
       const obj = {
         x: parseTimeStamp(temp[0]),
-        y: parseFloat(temp[1]),
+        y: parseFloat(temp[content.getData()[1] + 1]),
       };
       seriesRef.current.push(obj);
 
